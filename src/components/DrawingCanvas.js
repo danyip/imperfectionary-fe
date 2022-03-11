@@ -1,9 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
+import io from "socket.io-client";
+
 import "../stylesheets/DrawingCanvas.css";
 
 function DrawingCanvas() {
+
   const canvas = useRef();
 
+  
+  const socket = io.connect('http://localhost:9090')
+  
+  socket.on('canvas-data', (data)=>{
+    console.log('receiving canvas-data from socket');
+    if(!canvas.current) return // TODO: Check with Luke about this...
+    const image = new Image();
+    const ctx = canvas.current.getContext('2d');
+    image.onload = ()=>{
+      ctx.drawImage(image, 0, 0)
+    };
+    image.src = data;
+  })
+  
   const [drawing, setDrawing] = useState(false);
 
   const resize = () => {
@@ -15,7 +32,7 @@ function DrawingCanvas() {
   };
 
   const startDraw = (e) => {
-    console.log("mouse down: start drawing", e);
+    console.log("mouse down: start drawing");
     setDrawing(true);
     
   };
@@ -45,13 +62,15 @@ function DrawingCanvas() {
     ctx.lineCap = "round";
     ctx.strokeStyle = "black";
 
-    // console.log(ctx);
+    // console.log(canvas.current.toDataURL("image/png"));
 
     ctx.lineTo(xPos, yPos);
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(xPos, yPos);
     // console.log(xPos, yPos, canvas);
+
+    socket.emit("canvas-data", canvas.current.toDataURL("image/png"))
   };
 
   useEffect(() => {
