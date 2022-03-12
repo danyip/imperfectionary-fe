@@ -3,31 +3,13 @@ import Webcam from "react-webcam";
 import * as handpose from "@tensorflow-models/handpose";
 import "@tensorflow/tfjs-backend-webgl";
 import { drawHand } from "../utils";
-import { GestureDescription, Finger, FingerCurl, GestureEstimator } from "fingerpose";
+import { GestureEstimator } from "fingerpose";
+import { FistGesture } from "../gestures";
 
-const FistGesture = new GestureDescription('fist')
 
-// Thumb
-FistGesture.addCurl(Finger.Thumb, FingerCurl.HalfCurl, 1.0)
-FistGesture.addCurl(Finger.Thumb, FingerCurl.NoCurl, 0.5)
-
-// Index finger
-FistGesture.addCurl(Finger.Index, FingerCurl.FullCurl, 1.0)
-FistGesture.addCurl(Finger.Index, FingerCurl.HalfCurl, 0.9)
-
-// Middle finger
-FistGesture.addCurl(Finger.Middle, FingerCurl.FullCurl, 1.0)
-FistGesture.addCurl(Finger.Middle, FingerCurl.HalfCurl, 0.9)
-
-// Ring finger
-FistGesture.addCurl(Finger.Ring, FingerCurl.FullCurl, 1.0)
-FistGesture.addCurl(Finger.Ring, FingerCurl.HalfCurl, 0.9)
-
-// Pinky finger
-FistGesture.addCurl(Finger.Pinky, FingerCurl.FullCurl, 1.0)
-FistGesture.addCurl(Finger.Pinky, FingerCurl.HalfCurl, 0.9)
 
 const gestureEstimator = new GestureEstimator([FistGesture]) 
+
 
 function ImageDetection() {
   const webcamRef = useRef(null);
@@ -42,7 +24,10 @@ function ImageDetection() {
     }, 16);
   };
 
-  runHandpose();
+  useEffect(() => {
+    runHandpose();
+  }, [])
+  
 
   const detect = async (net) => {
     // Only run detections if webcam is up and running
@@ -72,8 +57,6 @@ function ImageDetection() {
 
       drawHand(hand, ctx);
 
-      // const predictions = await net.estimateHands(video, false)
-
       // console.log(predictions);
       if (hand.length > 0) {
         console.log(hand);
@@ -82,9 +65,7 @@ function ImageDetection() {
         )
         const gesture = gestureEstimations.gestures
         console.log(gesture, gesture[0]);
-        
       }
-
     }
   };
 
@@ -106,7 +87,6 @@ function ImageDetection() {
           height: 480,
         }}
       />
-
       <canvas
         ref={canvasRef}
         style={{
@@ -119,6 +99,17 @@ function ImageDetection() {
           zindex: 8,
         }}
       />
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          border: '1px solid green',
+          zIndex: 10
+        }}  
+      >
+      Drawing
+      </div>
     </div>
   );
 }

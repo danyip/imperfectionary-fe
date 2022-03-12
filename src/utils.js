@@ -13,5 +13,5 @@ export const drawHand = (predicitons, ctx) => {
       }
     })
   }
-
 }
+
