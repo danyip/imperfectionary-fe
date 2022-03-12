@@ -1,4 +1,5 @@
 import DrawingCanvas from './components/DrawingCanvas';
+import ImageDetection from './components/ImageDetection';
 import './App.css';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
       <div className='canvas-container'>
         <DrawingCanvas/>
       </div>
+      <ImageDetection/>
     </div>
   );
 }

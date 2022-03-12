@@ -27,8 +27,8 @@ function DrawingCanvas() {
     const ctx = canvas.current.getContext("2d");
     // ctx.canvas.width = window.innerWidth;
     // ctx.canvas.height = window.innerHeight;
-    ctx.canvas.width = 800;
-    ctx.canvas.height = 600;
+    ctx.canvas.width = 400;
+    ctx.canvas.height = 300;
   };
 
   const startDraw = (e) => {
