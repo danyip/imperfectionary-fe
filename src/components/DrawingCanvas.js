@@ -16,7 +16,7 @@ function DrawingCanvas() {
   const canvasRef = useRef(null);
   const socket = io.connect("http://localhost:9090");
 
-  const [drawing, setDrawing] = useState(true);
+  const [drawing, setDrawing] = useState(false);
 
   const gestureEstimator = new GestureEstimator([FistGesture, OpenGesture]);
 
@@ -52,7 +52,6 @@ function DrawingCanvas() {
   };
 
   const clearCanvas = () =>{
-    console.log('clear canvas');
     const ctx = canvas.current.getContext("2d");
     ctx.clearRect(0, 0, canvas.current.width, canvas.current.height)
   }
@@ -114,7 +113,7 @@ function DrawingCanvas() {
 
     setInterval(() => {
       detect(net);
-    }, 64);
+    }, 128);
   };
 
   useEffect(() => {
@@ -157,7 +156,6 @@ function DrawingCanvas() {
       // console.log(predictions);
       if (hand.length > 0) {
         // console.log(hand[0].landmarks[9][0]);
-        
         const gestureEstimations = gestureEstimator.estimate(
           hand[0].landmarks,
           9.8
@@ -170,7 +168,6 @@ function DrawingCanvas() {
         } else if (gesture && gesture.name === 'fist'){
           stopDraw()
         }
-        
         // console.log(gesture, gesture[0]);
       }
     }
