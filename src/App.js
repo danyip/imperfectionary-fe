@@ -1,3 +1,4 @@
+import Home from './components/Home'
 import DrawingCanvas from './components/DrawingCanvas';
 import GuessingCanvas from './components/GuessingCanvas'
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
@@ -7,13 +8,13 @@ function App() {
 
   return (
     <div className="App">
-      <header>
-        <h1>imperfectionary</h1>
-      </header>
+      
       <Router>
         <Routes>
-          <Route exact path='/draw' element={<DrawingCanvas/>}/>
-          <Route exact path='/guess' element={<GuessingCanvas/>}/>
+          <Route path='/' element={<Home/>}>
+            <Route exact path='/draw' element={<DrawingCanvas/>}/>
+            <Route exact path='/guess' element={<GuessingCanvas/>}/>
+          </Route>
         </Routes>
       </Router>
     </div>

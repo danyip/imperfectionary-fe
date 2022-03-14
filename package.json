@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mediapipe/hands": "^0.4.1646424915",
+    "@tensorflow-models/hand-pose-detection": "^2.0.0",
     "@tensorflow-models/handpose": "^0.0.7",
     "@tensorflow/tfjs-backend-webgl": "^3.14.0",
     "@tensorflow/tfjs-converter": "^3.14.0",
