@@ -2,24 +2,29 @@ import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 
 import Webcam from "react-webcam";
-import * as handpose from "@tensorflow-models/handpose";
+
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
-// import "@tensorflow/tfjs-backend-webgl";
+
 import { drawHand } from "../utils";
 import { GestureEstimator } from "fingerpose";
 import { FistGesture, OpenGesture } from "../gestures";
 
 import "../stylesheets/DrawingCanvas.css";
 
+let markerPos = []
+
 function DrawingCanvas() {
-  const canvas = useRef();
+  const canvas = useRef(null);
   const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
+  const webcamCanvasRef = useRef(null);
+  const marker = useRef(null)
   const socket = io.connect("http://localhost:9090");
 
   // const [drawing, setDrawing] = useState(true);
+  // const [markerPos, setMarkerPos] = useState([0,0])
 
-  const drawing = true
+  let drawing = false
+  
   const gestureEstimator = new GestureEstimator([FistGesture, OpenGesture]);
   
   const model = handPoseDetection.SupportedModels.MediaPipeHands;
@@ -36,13 +41,8 @@ function DrawingCanvas() {
 
   const resize = () => {
     const ctx = canvas.current.getContext("2d");
-    // ctx.canvas.width = window.innerWidth;
-    // ctx.canvas.height = window.innerHeight;
-    
     ctx.canvas.width = 640;
     ctx.canvas.height = 480;
-    
-
   };
 
   useEffect(() => {
@@ -92,17 +92,12 @@ function DrawingCanvas() {
     ctx.moveTo(xPos, yPos);
     // console.log(xPos, yPos, canvas);
 
-    socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
+    // socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
   };
 
   const handDraw = (x, y) => {
-    // console.log('draw', e);
-    // console.log('handDraw()', drawing);
 
     if (!drawing) return;
-
-    // console.log('handDraw()');
-    // console.log(x);
 
     const xPos = (x - canvas.current.width) * -1  //TODO: may need to account for scroll position here
     const yPos = y //TODO: may need to account for scroll position here
@@ -152,96 +147,74 @@ function DrawingCanvas() {
       // console.log(videoWidth);
 
       // Set canvas size to match the video feed
-      canvasRef.current.width = videoWidth;
-      canvasRef.current.height = videoHeight;
+      webcamCanvasRef.current.width = videoWidth;
+      webcamCanvasRef.current.height = videoHeight;
 
       // Make detections
       const hand = await net.estimateHands(video);
 
       // Draw mesh
-      const ctx = canvasRef.current.getContext("2d");
+      const ctx = webcamCanvasRef.current.getContext("2d");
 
       drawHand(hand, ctx);
+      // drawHand(hand, canvas.current.getContext('2d'));
 
+      
       if (hand.length > 0) {
-        // console.log(hand[0].keypoints[9].x);
-        // handDraw(hand[0].landmarks[9][0], hand[0].landmarks[9][1])
         handDraw(hand[0].keypoints[9].x, hand[0].keypoints[9].y)
+        markerPos = [
+          (hand[0].keypoints[9].x + canvas.current.offsetLeft - window.innerWidth)* -1, 
+          hand[0].keypoints[9].y + canvas.current.offsetTop
+        ]
 
-        console.log(hand[0].keypoints);
-        console.log(mapForFingerpose(hand));
-
-      }
-      
-      
-      // if (hand.length > 0) {
-      //   // console.log(hand[0].landmarks[9][0]);
-      //   const gestureEstimations = gestureEstimator.estimate(
-      //     hand[0].landmarks,
-      //     9.8
-      //   );
-      //   const  gesture = gestureEstimations.gestures[0];
+        marker.current.style.left = `${markerPos[0]}px`
+        marker.current.style.top = `${markerPos[1]}px`
         
-      //   if (gesture && gesture.name === 'open' && !drawing){
-      //     startDraw()
+        const gestureEstimations = gestureEstimator.estimate(
+          mapForFingerpose(hand),
+          9.8
+        );
+        const  gesture = gestureEstimations.gestures[0];
+        
+        if (gesture && gesture.name === 'open' && !drawing){
+          console.log('open');
+          startDraw()
           
-      //   } else if (gesture && gesture.name === 'fist'){
-      //     stopDraw()
-      //   }
-      //   // console.log(gesture, gesture[0]);
-      // }
+        } else if (gesture && gesture.name === 'fist'){
+          console.log('fist');
+          stopDraw()
+        }
+      }
     }
   };
 
   const mapForFingerpose = (hand)=>{
-    const keypointsArr = hand[0].keypoints
+    const keypointsArr = hand[0].keypoints3D
     return keypointsArr.map(point=>{
-      return [point.x, point.y]
+      return [point.x, point.y, point.z]
     })
   }
 
   return (
     <div>
+      <div className="marker" ref={marker}/>
       <canvas
         className="canvas"
         ref={canvas}
-        // onMouseMove={draw}
-        // onMouseDown={startDraw}
-        // onMouseUp={stopDraw}
-        onMouseDown={clearCanvas}
-        style={{
-          // transform: "scaleX(-1)",
-        }}
-      ></canvas>
+        onMouseMove={draw}
+        onMouseDown={startDraw}
+        onMouseUp={stopDraw}
+        // onMouseDown={clearCanvas}
+      />
       <div>
         <Webcam
+        className="webcam"
           ref={webcamRef}
           muted={true}
-          style={{
-            transform: "scaleX(-1)",
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
         />
         <canvas
-          ref={canvasRef}
-          style={{
-            transform: "scaleX(-1)",
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 8,
-          }}
+          className="webcamCanvas"
+          ref={webcamCanvasRef}
         />
       </div>
     </div>
