@@ -41,8 +41,8 @@ function DrawingCanvas() {
 
   const resize = () => {
     const ctx = canvas.current.getContext("2d");
-    ctx.canvas.width = 640;
-    ctx.canvas.height = 480;
+    ctx.canvas.width = 800;
+    ctx.canvas.height = 600;
   };
 
   useEffect(() => {
@@ -129,6 +129,7 @@ function DrawingCanvas() {
 
   const detect = async (net) => {
     // Only run detections if webcam is up and running
+    
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
@@ -136,15 +137,19 @@ function DrawingCanvas() {
     ) {
       // Get Video properties from the webcam component
       const video = webcamRef.current.video;
-      const videoWidth = webcamRef.current.video.videoWidth;
-      const videoHeight = webcamRef.current.video.videoHeight;
+
+      const context = canvas.current.getContext("2d");
+      // const videoWidth = webcamRef.current.video.videoWidth;
+      // const videoHeight = webcamRef.current.video.videoHeight;
+
+      const videoWidth = context.canvas.width * 0.3;
+      const videoHeight = context.canvas.height * 0.3;
 
       // Set video width
       webcamRef.current.video.width = videoWidth;
       webcamRef.current.video.height = videoHeight;
-      // console.log(videoWidth);
 
-      // Set canvas size to match the video feed
+      // Set canvas size to match the video
       webcamCanvasRef.current.width = videoWidth;
       webcamCanvasRef.current.height = videoHeight;
 
@@ -194,8 +199,9 @@ function DrawingCanvas() {
   }
 
   return (
-    <div>
+    <div className="draw-container">
       <div className="marker" ref={marker}/>
+      <div>
       <canvas
         className="canvas"
         ref={canvas}
@@ -204,7 +210,6 @@ function DrawingCanvas() {
         onMouseUp={stopDraw}
         // onMouseDown={clearCanvas}
       />
-      <div>
         <Webcam
         className="webcam"
           ref={webcamRef}
