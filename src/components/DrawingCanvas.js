@@ -55,6 +55,8 @@ function DrawingCanvas() {
     console.log("mouse down: start drawing");
     // setDrawing(true);
     drawing = true
+    console.log(marker.current);
+    marker.current.style.backgroundColor = `green`
     const ctx = canvas.current.getContext("2d");
     ctx.beginPath();
   };
@@ -63,8 +65,7 @@ function DrawingCanvas() {
     console.log("mouse up: stop drawing");
     // setDrawing(false);
     drawing = false
-    // const ctx = canvas.current.getContext("2d");
-    // ctx.beginPath();
+    marker.current.style.backgroundColor = `red`
   };
 
   const clearCanvas = () =>{
@@ -99,7 +100,7 @@ function DrawingCanvas() {
 
     if (!drawing) return;
 
-    const xPos = (x - canvas.current.width) * -1  //TODO: may need to account for scroll position here
+    const xPos = x  //TODO: may need to account for scroll position here
     const yPos = y //TODO: may need to account for scroll position here
 
     const ctx = canvas.current.getContext("2d");
@@ -107,13 +108,10 @@ function DrawingCanvas() {
     ctx.lineCap = "round";
     ctx.strokeStyle = "black";
 
-    // console.log(canvas.current.toDataURL("image/png"));
-
     ctx.lineTo(xPos, yPos);
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(xPos, yPos);
-    // console.log(xPos, yPos, canvas);
 
     socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
   };
@@ -151,7 +149,7 @@ function DrawingCanvas() {
       webcamCanvasRef.current.height = videoHeight;
 
       // Make detections
-      const hand = await net.estimateHands(video);
+      const hand = await net.estimateHands(video, {flipHorizontal: true});
 
       // Draw mesh
       const ctx = webcamCanvasRef.current.getContext("2d");
@@ -163,7 +161,7 @@ function DrawingCanvas() {
       if (hand.length > 0) {
         handDraw(hand[0].keypoints[9].x, hand[0].keypoints[9].y)
         markerPos = [
-          (hand[0].keypoints[9].x + canvas.current.offsetLeft - window.innerWidth)* -1, 
+          (hand[0].keypoints[9].x + canvas.current.offsetLeft), 
           hand[0].keypoints[9].y + canvas.current.offsetTop
         ]
 
