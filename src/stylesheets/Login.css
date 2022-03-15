@@ -1,0 +1,16 @@
+.login-form-container{
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.error-field{
+  outline: 3px solid red
+}
+
+.error-message{
+  height: 1rem;
+  color: red;
+}
