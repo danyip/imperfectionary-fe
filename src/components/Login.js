@@ -3,11 +3,14 @@ import { emailRegex} from "../lib/regex";
 import "../stylesheets/forms.css";
 // import { useLoginUser } from "../hooks/login";
 import { login } from "../lib/api";
+import { useDispatch } from "react-redux";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [emailFormatValidation, setEmailFormatValidation] = useState(true);
   const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch()
 
   const checkEmailFormat = () => {
     setEmailFormatValidation(emailRegex.test(email));
@@ -20,7 +23,8 @@ function Login() {
 
     try {
       const res = await login(email, password)
-      console.log(res.data);
+      console.log(res.data.token);
+      dispatch({type: 'currentUser/login', payload: res.data})
 
     } catch (err) {
       console.log(err);
