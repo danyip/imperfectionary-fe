@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { emailRegex} from "../utils/regex";
+import { emailRegex} from "../lib/regex";
 import "../stylesheets/forms.css";
+// import { useLoginUser } from "../hooks/login";
+import { login } from "../lib/api";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,10 +13,18 @@ function Login() {
     setEmailFormatValidation(emailRegex.test(email));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     console.log("TRIGGER LOGIN POST HERE");
     console.log(email, password);
+
+    try {
+      const res = await login(email, password)
+      console.log(res.data);
+
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

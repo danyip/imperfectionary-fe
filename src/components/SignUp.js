@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../stylesheets/forms.css";
-import { emailRegex, usernameRegex } from "../utils/regex";
+import { emailRegex, usernameRegex } from "../lib/regex";
 
 function SignUp() {
   const [errorMessages, setErrorMessages] = useState({});

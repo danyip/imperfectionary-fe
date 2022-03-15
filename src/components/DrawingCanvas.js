@@ -5,7 +5,7 @@ import Webcam from "react-webcam";
 
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 
-import { drawHand } from "../utils";
+import { drawHand } from "../lib/drawHand";
 import { GestureEstimator } from "fingerpose";
 import { FistGesture, OpenGesture } from "../gestures";
 
