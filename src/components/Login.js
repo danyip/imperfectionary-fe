@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../stylesheets/Login.css";
+import "../stylesheets/forms.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ function Login() {
   };
 
   const handleLogin = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     console.log("TRIGGER LOGIN POST HERE");
     console.log(email, password);
   };
@@ -26,26 +26,28 @@ function Login() {
   return (
     <div>
       <h1>Login Component</h1>
-      
       <div className="error-message"></div>
-      <form 
-        className="login-form-container"
-        onSubmit={handleLogin}
-      >
-        <input
-          className={`form-input ${!emailFormatValidation && "error-field"}`}
-          id="email-input"
-          type="email"
-          placeholder="email"
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={checkEmailFormat}
-        />
-        <input
-          id="password-input"
-          type="password"
-          placeholder="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      <form className="form-container" onSubmit={handleLogin}>
+        <label>
+          Email:
+          <input
+            className={`form-input ${!emailFormatValidation && "error-field"}`}
+            id="email-input"
+            type="email"
+            placeholder="email"
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={checkEmailFormat}
+          />
+        </label>
+        <label>
+          Password:
+          <input
+            id="password-input"
+            type="password"
+            placeholder="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </label>
         <button>Login</button>
       </form>
     </div>

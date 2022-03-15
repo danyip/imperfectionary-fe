@@ -1,9 +1,14 @@
-.login-form-container{
+.form-container{
   display: flex;
   flex-direction: column;
   width: fit-content;
   margin: 0 auto;
-  gap: 1rem;
+  text-align: left;
+  gap: 0.5rem;
+}
+
+.form-container input {
+  display: block;
 }
 
 .error-field{
@@ -11,6 +16,7 @@
 }
 
 .error-message{
-  height: 1rem;
+  height: 0.5rem;
   color: red;
+  font-size: 0.8rem;
 }
