@@ -2,11 +2,14 @@ import { createStore } from 'redux';
 
 const initialState = {
   currentUser: {},
-  token: ''
+  token: '',
+  socket: {},
+  socketRoom: {},
 };
 
 function reducer( state=initialState, action ){
 
+  console.log('reducer state', state);
   switch( action.type ){
 
     case 'currentUser/login':
@@ -21,6 +24,18 @@ function reducer( state=initialState, action ){
         ...state,
         currentUser: {},
         token: ''
+      };
+
+    case 'socketIO/connect':
+      return {
+        ...state,
+        socket: action.payload
+      }
+      
+    case 'socketIORoom/connect':
+      return {
+        ...state,
+        socketRoom: action.payload
       }
 
     default:
@@ -34,7 +49,7 @@ function reducer( state=initialState, action ){
 
 export const store = createStore(
   reducer, 
-  {token: localStorage.getItem('jwt')},
+  {token: localStorage.getItem('jwt'), currentUser: localStorage.getItem('currentUser')},
   // optional argument here: initial state value, perhaps from localStorage or DB?
   // might need to merge with the above 'initialState' object?
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({trace: true})
