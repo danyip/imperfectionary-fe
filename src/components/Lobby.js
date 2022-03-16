@@ -1,13 +1,20 @@
+import { log } from "@tensorflow/tfjs-core/dist/log";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 
 function Lobby() {
   const [roomName, setRoomName] = useState("");
-  const [leaveRoomName, setLeaveRoomName] = useState("");
   const dispatch = useDispatch();
-  const socket = useSelector((state) => state.socket);
   const [roomList, setRoomList] = useState([]);
+  
+  
+  const socket = useSelector((state) => state.socket);
+  
+  
+  
+  console.log(socket);
+
 
   socket.on('new-rooms', data =>{
     console.log(data);
@@ -18,17 +25,23 @@ function Lobby() {
     socket.emit('enter-lobby')
   }, [])
   
-
-  const createRoom = () => {
-    socket.emit("join-room", roomName);
+  const joinRoom = (room) => {
+    console.log('in joinRoom()', room);
+    socket.emit("join-room", room);
   };
 
   return (
     <div>
       <h1>Lobby</h1>
       <ul>
-        {roomList.map((room) => (
-          <li key={room}>{room}</li>
+        {roomList.map((roomName) => (
+          <li 
+            key={roomName}
+            onClick={(e)=>joinRoom(e.target.dataset.name)}
+            data-name={roomName}
+          >
+            {roomName}
+          </li>
         ))}
       </ul>
 
@@ -39,7 +52,7 @@ function Lobby() {
           setRoomName(e.target.value);
         }}
       />
-      <button onClick={createRoom}>Create Room</button>
+      <button onClick={()=>joinRoom(roomName)}>Create Room</button>
 
     </div>
   );

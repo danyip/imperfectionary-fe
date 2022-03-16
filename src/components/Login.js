@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { emailRegex} from "../lib/regex";
 import "../stylesheets/forms.css";
-// import { useLoginUser } from "../hooks/login";
 import { login } from "../lib/api";
 import { useDispatch } from "react-redux";
+import io from "socket.io-client";
+import { useNavigate } from "react-router-dom";
+
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,6 +14,7 @@ function Login() {
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const checkEmailFormat = () => {
     setEmailFormatValidation(emailRegex.test(email));
@@ -18,13 +22,23 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("TRIGGER LOGIN POST HERE");
+    
     console.log(email, password);
 
     try {
       const res = await login(email, password)
       console.log(res.data.token);
-      dispatch({type: 'currentUser/login', payload: res.data})
+      
+      const socket = io.connect("http://localhost:9090", {
+          auth: {
+            token: res.data.token,
+          },
+        })
+      
+      dispatch({type: 'currentUser/login', payload: [res.data, socket]}) //TODO: FIX THIS! too many re-renders error
+      
+      navigate('/lobby')
+
 
     } catch (err) {
       console.log(err);
