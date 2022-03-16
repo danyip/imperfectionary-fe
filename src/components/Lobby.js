@@ -2,20 +2,16 @@ import { log } from "@tensorflow/tfjs-core/dist/log";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 function Lobby() {
   const [roomName, setRoomName] = useState("");
   const dispatch = useDispatch();
   const [roomList, setRoomList] = useState([]);
   
-  
   const socket = useSelector((state) => state.socket);
-  
-  
-  
-  console.log(socket);
 
-
+  const navigate = useNavigate()
   socket.on('new-rooms', data =>{
     console.log(data);
     setRoomList(data)
@@ -26,8 +22,8 @@ function Lobby() {
   }, [])
   
   const joinRoom = (room) => {
-    console.log('in joinRoom()', room);
     socket.emit("join-room", room);
+    navigate('/play')
   };
 
   return (
