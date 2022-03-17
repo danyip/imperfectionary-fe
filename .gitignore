@@ -56,3 +56,6 @@ node_modules/
 **/config/master.key
 
 .env
+
+# Local Netlify folder
+.netlify

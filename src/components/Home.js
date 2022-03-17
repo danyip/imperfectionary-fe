@@ -22,8 +22,6 @@ function Home() {
           <li onClick={() => navigate('/login')}>Login</li>
           <li onClick={() => navigate('/signup')}>Signup</li>
           <li onClick={() => navigate('/lobby')}>Lobby</li>
-          <li onClick={() => navigate('/draw')}>Draw</li>
-          <li onClick={() => navigate('/guess')}>Guess</li>
           <li onClick={logout}>Logout</li>
         </ul>
       </nav>

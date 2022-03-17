@@ -7,7 +7,6 @@ import "../stylesheets/DrawingCanvas.css";
 function GuessingCanvas() {
 
   const canvas = useRef();
-  // const socket = io.connect('http://localhost:9090')
 
   const socket = useSelector((state) => state.socket);
 
