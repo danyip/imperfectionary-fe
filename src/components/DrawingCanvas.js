@@ -19,11 +19,8 @@ function DrawingCanvas() {
   const webcamRef = useRef(null);
   const webcamCanvasRef = useRef(null);
   const marker = useRef(null)
-  // const socket = io.connect("http://localhost:9090");
-  const socket = useSelector((state) => state.socket);
 
-  // const [drawing, setDrawing] = useState(true);
-  // const [markerPos, setMarkerPos] = useState([0,0])
+  const socket = useSelector((state) => state.socket);
 
   let drawing = false
   
@@ -115,6 +112,8 @@ function DrawingCanvas() {
     ctx.beginPath();
     ctx.moveTo(xPos, yPos);
     console.log(socket);
+
+    
     socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
   };
 
