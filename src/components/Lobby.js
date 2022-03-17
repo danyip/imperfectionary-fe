@@ -4,23 +4,28 @@ import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
-function Lobby() {
+function Lobby(props) {
   const [roomName, setRoomName] = useState("");
   const dispatch = useDispatch();
   const [roomList, setRoomList] = useState([]);
   
-  const socket = useSelector((state) => state.socket);
-  console.log(socket);
+  // const socket = useSelector((state) => state.socket);
+  // const socket = io.connect("http://localhost:9090")
+  const socket = props.socket
+  console.log('LOBBY, socket connected? ', socket.connected);
   const navigate = useNavigate()
 
   const newRoomsHandler = data =>{
-    
     console.log('newRoomsHandler()', data);
     setRoomList(data)
   }
+  
   socket.on('new-rooms', newRoomsHandler) 
 
   useEffect(() => {
+    if (!socket) {
+      navigate('/login')
+    }
     socket.emit('enter-lobby')
     
     return ()=>{

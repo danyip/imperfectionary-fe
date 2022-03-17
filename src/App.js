@@ -9,34 +9,38 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import io from "socket.io-client";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  console.log(' %c App rendering', 'font-size: 16px');
+  console.log(" %c App rendering", "font-size: 16px");
 
-  const token = localStorage.getItem('jwt')
+  const token = localStorage.getItem("jwt");
+
+  const [socket, setSocket] = useState(null);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     if (token) {
-      
-      dispatch({
-        type: "socketIO/connect",
-        payload: io.connect("http://localhost:9090", {
-          auth: {
-            token: token,
-          },
-        }),
+      const socket = io.connect("http://localhost:9090", {
+        auth: {
+          token: token,
+        },
       });
+
+      setSocket(socket);
+      // dispatch({
+      //   type: "socketIO/connect",
+      //   payload: io.connect("http://localhost:9090", {
+      //     auth: {
+      //       token: token,
+      //     },
+      //   }),
+      // });
+      return ()=> {socket.disconnect()}
     }
-    
-  }, [])
+  }, []);
   
-
-  
-
 
   return (
     <div className="App">
@@ -45,8 +49,8 @@ function App() {
           <Route path="/" element={<Home />}>
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<SignUp />} />
-            <Route exact path="/lobby" element={<Lobby />} />
-            <Route exact path="/play" element={<GameRoom />} />
+            <Route exact path="/lobby" element={<Lobby socket={socket} />} />
+            <Route exact path="/play" element={<GameRoom socket={socket}/>} />
             <Route exact path="/draw" element={<DrawingCanvas />} />
             <Route exact path="/guess" element={<GuessingCanvas />} />
           </Route>

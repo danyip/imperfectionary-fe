@@ -1,23 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
+// import io from "socket.io-client";
+import { useSelector } from "react-redux";
 
 import "../stylesheets/DrawingCanvas.css";
 
-function DrawingCanvas() {
+function GuessingCanvas() {
 
   const canvas = useRef();
-  const socket = io.connect('http://localhost:9090')
+  // const socket = io.connect('http://localhost:9090')
+  // const socket = useSelector((state) => state.socket);
   
-  socket.on('canvas-data', (data)=>{
-    console.log('receiving canvas-data from socket');
-    if(!canvas.current) return // TODO: Check with Luke about this...
-    const image = new Image();
-    const ctx = canvas.current.getContext('2d');
-    image.onload = ()=>{
-      ctx.drawImage(image, 0, 0)
-    };
-    image.src = data;
-  })
+  // socket.on('canvas-data', (data)=>{
+  //   console.log('receiving canvas-data from socket');
+  //   if(!canvas.current) return // TODO: Check with Luke about this...
+  //   const image = new Image();
+  //   const ctx = canvas.current.getContext('2d');
+  //   image.onload = ()=>{
+  //     ctx.drawImage(image, 0, 0)
+  //   };
+  //   image.src = data;
+  // })
   
   const resize = () => {
     const ctx = canvas.current.getContext("2d");
@@ -45,4 +47,4 @@ function DrawingCanvas() {
   );
 }
 
-export default DrawingCanvas;
+export default GuessingCanvas;

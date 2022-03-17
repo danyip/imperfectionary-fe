@@ -10,6 +10,7 @@ import { GestureEstimator } from "fingerpose";
 import { FistGesture, OpenGesture } from "../gestures";
 
 import "../stylesheets/DrawingCanvas.css";
+import { useSelector } from "react-redux";
 
 let markerPos = []
 
@@ -19,6 +20,7 @@ function DrawingCanvas() {
   const webcamCanvasRef = useRef(null);
   const marker = useRef(null)
   // const socket = io.connect("http://localhost:9090");
+  const socket = useSelector((state) => state.socket);
 
   // const [drawing, setDrawing] = useState(true);
   // const [markerPos, setMarkerPos] = useState([0,0])
@@ -112,8 +114,8 @@ function DrawingCanvas() {
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(xPos, yPos);
-
-    // socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
+    console.log(socket);
+    socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
   };
 
   const runHandpose = async () => {

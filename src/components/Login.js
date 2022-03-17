@@ -29,13 +29,13 @@ function Login() {
       const res = await login(email, password)
       console.log(res.data.token);
       
-      const socket = io.connect("http://localhost:9090", {
-          auth: {
-            token: res.data.token,
-          },
-        })
+      // const socket = io.connect("http://localhost:9090", {
+      //     auth: {
+      //       token: res.data.token,
+      //     },
+      //   })
       
-      dispatch({type: 'currentUser/login', payload: [res.data, socket]}) //TODO: FIX THIS! too many re-renders error
+      dispatch({type: 'currentUser/login', payload: [res.data, null]}) //TODO: FIX THIS! too many re-renders error
       
       navigate('/lobby')
 

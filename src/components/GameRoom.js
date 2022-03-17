@@ -4,15 +4,16 @@ import { useNavigate } from "react-router-dom";
 import ChatBox from "./ChatBox";
 
 
-function GameRoom() {
+function GameRoom(props) {
   const [players, setPlayers] = useState([])
   const [room, setRoom] = useState('')
   const [messages, setMessages] = useState([])
   const [messageText, setMessageText] = useState('')
   const navigate = useNavigate()
   
-  const socket = useSelector((state) => state.socket);
-  const currentUser = useSelector((state) => state.currentUser);
+  // const socket = useSelector((state) => state.socket);
+  const socket = props.socket
+  // const currentUser = useSelector((state) => state.currentUser);
 
   useEffect(() => {
     socket.emit('enter-game-room', (playerArray, roomName)=>{
@@ -34,13 +35,13 @@ function GameRoom() {
     
     const messageObj = {
       text: messageText,
-        user: currentUser
+        user: 'currentUser'
     }
 
     socket.emit('new-message', messageObj)
 
     setMessages([...messages, messageObj])
-    
+
     setMessageText('')
 
   }
