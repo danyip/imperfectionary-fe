@@ -5,6 +5,7 @@ import io from "socket.io-client";
 
 import { login } from "../lib/api";
 import { emailRegex } from "../lib/regex";
+import { BASE_URL } from "../lib/api";
 
 import "../stylesheets/forms.css";
 
@@ -28,8 +29,9 @@ function Login() {
       const res = await login(email, password);
 
       // Make the socket connection passing the token from login
-      const socket = io.connect("http://localhost:9090", {
-        auth: {
+      // const socket = io.connect("http://localhost:9090", {
+      const socket = io.connect(BASE_URL, {
+      auth: {
           token: res.data.token,
         },
       });
