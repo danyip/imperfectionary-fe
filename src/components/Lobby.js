@@ -12,13 +12,18 @@ function Lobby() {
   const socket = useSelector((state) => state.socket);
 
   const navigate = useNavigate()
-  socket.on('new-rooms', data =>{
+
+  const newRoomsHandler = data =>{
     console.log(data);
     setRoomList(data)
-  })
+  }
+  socket.on('new-rooms', newRoomsHandler) 
 
   useEffect(() => {
     socket.emit('enter-lobby')
+    return ()=>{
+      socket.off('new-rooms', newRoomsHandler)
+    }
   }, [])
   
   const joinRoom = (room) => {

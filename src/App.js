@@ -9,22 +9,33 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
+  console.log(' %c App rendering', 'font-size: 16px');
   const token = useSelector((state) => state.token);
+
   const dispatch = useDispatch();
 
-  if (token) {
+  useEffect(() => {
 
-    dispatch({
-      type: "socketIO/connect",
-      payload: io.connect("http://localhost:9090", {
-        auth: {
-          token: token,
-        },
-      }),
-    });
-  }
+    if (token) {
+      console.log('App.js ');
+      
+      dispatch({
+        type: "socketIO/connect",
+        payload: io.connect("http://localhost:9090", {
+          auth: {
+            token: token,
+          },
+        }),
+      });
+    }
+    
+  }, [])
+  
+
+  
 
 
   return (
