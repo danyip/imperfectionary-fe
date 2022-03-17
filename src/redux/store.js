@@ -3,8 +3,8 @@ import { createStore } from 'redux';
 const initialState = {
   currentUser: {},
   token: '',
-  socket: {},
-  socketRoom: {},
+  socket: null,
+  
 };
 
 function reducer( state=initialState, action ){
@@ -24,7 +24,8 @@ function reducer( state=initialState, action ){
       return {
         ...state,
         currentUser: {},
-        token: ''
+        token: '',
+        socket: null
       };
 
     case 'socketIO/connect':
