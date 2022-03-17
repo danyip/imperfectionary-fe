@@ -8,19 +8,19 @@ import GuessingCanvas from "./components/GuessingCanvas";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import io from "socket.io-client";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 
 function App() {
   console.log(' %c App rendering', 'font-size: 16px');
-  const token = useSelector((state) => state.token);
+
+  const token = localStorage.getItem('jwt')
 
   const dispatch = useDispatch();
 
   useEffect(() => {
 
     if (token) {
-      console.log('App.js ');
       
       dispatch({
         type: "socketIO/connect",

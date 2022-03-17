@@ -10,17 +10,19 @@ function Lobby() {
   const [roomList, setRoomList] = useState([]);
   
   const socket = useSelector((state) => state.socket);
-
+  console.log(socket);
   const navigate = useNavigate()
 
   const newRoomsHandler = data =>{
-    console.log(data);
+    
+    console.log('newRoomsHandler()', data);
     setRoomList(data)
   }
   socket.on('new-rooms', newRoomsHandler) 
 
   useEffect(() => {
     socket.emit('enter-lobby')
+    
     return ()=>{
       socket.off('new-rooms', newRoomsHandler)
     }
