@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ChatBox from "./ChatBox";
 
-function GameRoom(props) {
+function GameRoom() {
   const [players, setPlayers] = useState([]);
   const [room, setRoom] = useState("");
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
+  
   const navigate = useNavigate();
 
-  // const socket = useSelector((state) => state.socket);
-  const socket = props.socket;
+  const socket = useSelector((state) => state.socket);
   const currentUser = useSelector((state) => state.currentUser);
 
+
   useEffect(() => {
+
+    if (!socket) {
+      navigate('/lobby')
+      return
+    }
+
     socket.emit("enter-game-room", (playerArray, roomName) => {
       if (playerArray.length === 0) {
         navigate("/lobby");
@@ -23,30 +30,28 @@ function GameRoom(props) {
       setRoom(roomName);
     });
 
-  }, []);
-
-  useEffect(() => {
-    socket.on("update-player-list", (playerArray) => {
-      setPlayers(playerArray);
-    });
+    socket.on("update-player-list", updatePlayerList);
 
     socket.on("message-data", handleMessageData);
 
     return ()=> {
-      console.log('removing MESSAGE DATA LISTENER');
       socket.removeListener("message-data", handleMessageData);
+      socket.removeListener("update-player-list", updatePlayerList);
     }
   
   }, [])
 
   const handleMessageData = (message) => {
-    console.log("reciveing message-data", message);
-      setMessages([...messages, message]);
+      setMessages( (prevState)=>{
+        return [...prevState, message]
+      })
+  }
+
+  const updatePlayerList = (playerArray) =>{
+    setPlayers(playerArray)
   }
   
   
-
-
   const sendMessage = () => {
     if (messageText.length === 0) return;
 

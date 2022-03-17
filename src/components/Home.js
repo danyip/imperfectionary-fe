@@ -5,8 +5,6 @@ import { useDispatch } from "react-redux";
 
 function Home() {
 
-  
-
   const navigate = useNavigate()
   const dispatch = useDispatch()
 

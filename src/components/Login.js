@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { emailRegex} from "../lib/regex";
-import "../stylesheets/forms.css";
-import { login } from "../lib/api";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import io from "socket.io-client";
-import { useNavigate } from "react-router-dom";
 
+import { login } from "../lib/api";
+import { emailRegex } from "../lib/regex";
 
+import "../stylesheets/forms.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [emailFormatValidation, setEmailFormatValidation] = useState(true);
   const [password, setPassword] = useState("");
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const checkEmailFormat = () => {
     setEmailFormatValidation(emailRegex.test(email));
@@ -22,23 +22,23 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    console.log(email, password);
 
     try {
-      const res = await login(email, password)
-      console.log(res.data.token);
-      
-      // const socket = io.connect("http://localhost:9090", {
-      //     auth: {
-      //       token: res.data.token,
-      //     },
-      //   })
-      
-      dispatch({type: 'currentUser/login', payload: [res.data, null]}) //TODO: FIX THIS! too many re-renders error
-      
-      navigate('/lobby')
 
+      const res = await login(email, password);
+
+      // Make the socket connection passing the token from login
+      const socket = io.connect("http://localhost:9090", {
+        auth: {
+          token: res.data.token,
+        },
+      });
+
+      // Pass userName, token and socket connection to redux
+      dispatch({ type: "currentUser/login", payload: [res.data, socket] });
+
+      // To the lobby!
+      navigate("/lobby");
 
     } catch (err) {
       console.log(err);

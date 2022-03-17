@@ -1,43 +1,33 @@
-import { log } from "@tensorflow/tfjs-core/dist/log";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import io from "socket.io-client";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-function Lobby(props) {
+function Lobby() {
   const [roomName, setRoomName] = useState("");
-  const dispatch = useDispatch();
   const [roomList, setRoomList] = useState([]);
-
-  // const socket = useSelector((state) => state.socket);
-  // const socket = io.connect("http://localhost:9090")
-  const socket = props.socket;
-
-  // console.log("LOBBY, socket connected? ", socket.connected);
-  // console.log(socket);
 
   const navigate = useNavigate();
 
-  const newRoomsHandler = (data) => {
-    console.log("newRoomsHandler()", data);
-    setRoomList(data);
-  };
+  const socket = useSelector((state) => state.socket);
 
-  useEffect(() => {
-    socket.on("new-rooms", newRoomsHandler);
-  }, [])
   
   useEffect(() => {
     if (!socket) {
       navigate("/login");
+      return;
+    } else {
+      socket.emit("enter-lobby");
+      socket.on("new-rooms", newRoomsHandler);
     }
-    socket.emit("enter-lobby");
 
     return () => {
-      console.log("disconnecting newRoomsHandler()");
       socket.removeListener("new-rooms", newRoomsHandler);
     };
   }, []);
+
+  const newRoomsHandler = (data) => {
+    setRoomList(data);
+  };
 
   const joinRoom = (room) => {
     socket.emit("join-room", room);
