@@ -111,7 +111,7 @@ function DrawingCanvas() {
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(xPos, yPos);
-    console.log(socket);
+    // console.log(socket);
 
     
     socket.emit("canvas-data", canvas.current.toDataURL("image/png"));

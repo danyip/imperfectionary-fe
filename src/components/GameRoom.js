@@ -10,8 +10,10 @@ function GameRoom() {
   const [room, setRoom] = useState("");
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
+  const [word, setWord] = useState('')
 
-  const [gameStarted, setGameStarted] = useState(false);
+  // const [gameStarted, setGameStarted] = useState(false);
+
   const [drawing, setDrawing] = useState(false);
 
   const navigate = useNavigate();
@@ -25,22 +27,34 @@ function GameRoom() {
       return;
     }
 
-    socket.emit("enter-game-room", (playerArray, roomName) => {
-      if (playerArray.length === 0) {
+    socket.emit("enter-game-room", (gameObj, roomName) => {
+      if (!gameObj) {
         navigate("/lobby");
       }
-      setPlayers(playerArray);
+      setPlayers(gameObj.players);
       setRoom(roomName);
+      if (gameObj.drawPlayer === currentUser.username) {
+        setDrawing(true);
+        setWord(gameObj.word)
+      }else{
+        const secretWord = gameObj.word.split('').map(char => char === ' ' ? char : '_ ' )
+        setWord(secretWord)
+      }
+      
     });
 
     socket.on("update-player-list", updatePlayerList);
     socket.on("message-data", handleMessageData);
-    socket.on("start-game", handleStartGame)
-
+    // socket.on("start-game", handleStartGame);
+    socket.on("correct-guess", handleCorrectGuess);
+    socket.on("next-round", handleNextRound)
+    
     return () => {
       socket.removeListener("message-data", handleMessageData);
       socket.removeListener("update-player-list", updatePlayerList);
-      socket.removeListener("start-game", handleStartGame)
+      // socket.removeListener("start-game", handleStartGame);
+      socket.removeListener("correct-guess", handleCorrectGuess);
+      socket.removeListener("next-round", handleNextRound)
     };
   }, []);
 
@@ -54,20 +68,20 @@ function GameRoom() {
     setPlayers(playerArray);
   };
 
-  const handleStartGame = (gameObj)=>{
-    console.log(gameObj);
-    if (gameObj.drawPlayer === currentUser) {
-      setDrawing(true)
-    };
-    setGameStarted(true)
-  }
+  // const handleStartGame = (gameObj) => {
+  //   console.log(gameObj);
+  //   if (gameObj.drawPlayer === currentUser.username) {
+  //     setDrawing(true);
+  //   }
+  //   setGameStarted(true);
+  // };
 
   const sendMessage = () => {
     if (messageText.length === 0) return;
 
     const messageObj = {
       text: messageText,
-      user: currentUser,
+      user: currentUser.username,
     };
 
     socket.emit("new-message", messageObj);
@@ -77,17 +91,47 @@ function GameRoom() {
     setMessageText("");
   };
 
-  const startHandler = () => {
-    console.log('startGame');
-    socket.emit('start-trigger')
-  };
+  const handleCorrectGuess = (name, word)=>{
+    console.log(`Correct guess by ${name} with ${word}`);
+  }
 
-  if (gameStarted) return drawing ? <DrawingCanvas /> : <GuessingCanvas />;
+  const handleNextRound = (gameObj)=>{
+    console.log('Triggering next round', gameObj);
+  }
+
+  // const startHandler = () => {
+  //   console.log("startGame");
+  //   socket.emit("start-trigger");
+  // };
+
+  // if (gameStarted)
+  //   return drawing ? (
+  //     <div>
+  //       <ChatBox
+  //         setMessageText={setMessageText}
+  //         messageText={messageText}
+  //         sendMessage={sendMessage}
+  //         messages={messages}
+  //       />
+  //       <DrawingCanvas />
+  //     </div>
+  //   ) : (
+  //     <div>
+  //     <ChatBox
+  //         setMessageText={setMessageText}
+  //         messageText={messageText}
+  //         sendMessage={sendMessage}
+  //         messages={messages}
+  //       />
+  //       <GuessingCanvas />
+  //     </div>
+  //   );
 
   return (
     <div>
       <h1>{room}</h1>
-      <button onClick={startHandler}>Start</button>
+      <h2>{word}</h2>
+      {/* <button onClick={startHandler}>Start</button> */}
       <div>
         <h2>Player list</h2>
         <ul>
@@ -102,6 +146,7 @@ function GameRoom() {
           messages={messages}
         />
       </div>
+      {drawing? <DrawingCanvas /> : <GuessingCanvas />}
     </div>
   );
 }

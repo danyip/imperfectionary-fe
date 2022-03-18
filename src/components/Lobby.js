@@ -30,6 +30,7 @@ function Lobby() {
   };
 
   const joinRoom = (room) => {
+    if (room.length===0) return
     socket.emit("join-room", room);
     navigate("/play");
   };
