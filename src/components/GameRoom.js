@@ -68,13 +68,6 @@ function GameRoom() {
     setPlayers(playerArray);
   };
 
-  // const handleStartGame = (gameObj) => {
-  //   console.log(gameObj);
-  //   if (gameObj.drawPlayer === currentUser.username) {
-  //     setDrawing(true);
-  //   }
-  //   setGameStarted(true);
-  // };
 
   const sendMessage = () => {
     if (messageText.length === 0) return;
@@ -93,39 +86,21 @@ function GameRoom() {
 
   const handleCorrectGuess = (name, word)=>{
     console.log(`Correct guess by ${name} with ${word}`);
+    setWord(`Correct guess by ${name} with ${word}. The next round will begin shortly.`)
   }
 
   const handleNextRound = (gameObj)=>{
     console.log('Triggering next round', gameObj);
+    
+      if (gameObj.drawPlayer === currentUser.username) {
+        setDrawing(true);
+        setWord(gameObj.word)
+      }else{
+        const secretWord = gameObj.word.split('').map(char => char === ' ' ? char : '_ ' )
+        setDrawing(false);
+        setWord(secretWord)
+      }
   }
-
-  // const startHandler = () => {
-  //   console.log("startGame");
-  //   socket.emit("start-trigger");
-  // };
-
-  // if (gameStarted)
-  //   return drawing ? (
-  //     <div>
-  //       <ChatBox
-  //         setMessageText={setMessageText}
-  //         messageText={messageText}
-  //         sendMessage={sendMessage}
-  //         messages={messages}
-  //       />
-  //       <DrawingCanvas />
-  //     </div>
-  //   ) : (
-  //     <div>
-  //     <ChatBox
-  //         setMessageText={setMessageText}
-  //         messageText={messageText}
-  //         sendMessage={sendMessage}
-  //         messages={messages}
-  //       />
-  //       <GuessingCanvas />
-  //     </div>
-  //   );
 
   return (
     <div>
