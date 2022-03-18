@@ -34,12 +34,6 @@ function reducer( state=initialState, action ){
         socket: action.payload
       }
       
-    case 'socketIORoom/connect':
-      return {
-        ...state,
-        socketRoom: action.payload
-      }
-
     default:
 
       return state;
@@ -52,7 +46,7 @@ function reducer( state=initialState, action ){
 export const store = createStore(
   reducer, 
   {token: localStorage.getItem('jwt'), currentUser: 
-  JSON.parse(localStorage.getItem('currentUser'))},
+  JSON.parse(localStorage.getItem('currentUser')), socket: null},
   // optional argument here: initial state value, perhaps from localStorage or DB?
   // might need to merge with the above 'initialState' object?
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({trace: true})

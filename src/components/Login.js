@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import io from "socket.io-client";
+import axios from 'axios'
 
 import { login } from "../lib/api";
 import { emailRegex } from "../lib/regex";
@@ -36,6 +37,7 @@ function Login() {
         },
       });
 
+      console.log(res.data);
       // Pass userName, token and socket connection to redux
       dispatch({ type: "currentUser/login", payload: [res.data, socket] });
 

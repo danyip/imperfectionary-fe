@@ -10,6 +10,8 @@ import { BASE_URL } from "../lib/api";
 
 function EditProfile() {
   const currentUser = useSelector((state) => state.currentUser);
+  const token = useSelector((state) => state.token);
+
 
   const [errorMessages, setErrorMessages] = useState({});
   const [serverErrorMessage, setServerErrorMessage] = useState('');
@@ -64,17 +66,12 @@ function EditProfile() {
       console.log("TRIGGER EditProfile POST HERE");
       console.log(username, email, password);
       try {
-        const res = await update(username, email, password)
-        console.log(res);
-        
-        // const socket = io.connect(BASE_URL, {
-        //   auth: {
-        //       token: res.data.token,
-        //     },
-        //   });
-    
+        const res = await update(username, email, password, token)
+
+        console.log(res.data);
+
           // Pass userName, token and socket connection to redux
-          dispatch({ type: "currentUser/login", payload: [res.data, socket] });
+          dispatch({ type: "currentUser/login", payload: [{user: res.data, token: token}, socket] });
     
           // To the lobby!
           navigate("/lobby");

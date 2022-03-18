@@ -19,8 +19,16 @@ export const signup = (username, email, password) => {
   return axios.post(url, { username: username, email: email, password: password });
 };
 
-export const update = (username, email, password) => {
+export const update = (username, email, password, token) => {
   const url = `${BASE_URL}/users/update`;
 
-  return axios.post(url, { username: username, email: email, password: password });
+  return axios.post(url, { username: username, email: email, password: password }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 };
+
+
+
+// axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
