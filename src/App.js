@@ -8,6 +8,7 @@ import { BASE_URL } from "./lib/api";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import EditProfile from "./components/EditProfile";
 import Lobby from "./components/Lobby";
 import GameRoom from "./components/GameRoom";
 import DrawingCanvas from "./components/DrawingCanvas";
@@ -49,6 +50,7 @@ function App() {
           <Route path="/" element={<Home />}>
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<SignUp />} />
+            <Route exact path="/profile" element={<EditProfile />} />
             <Route exact path="/lobby" element={<Lobby />} />
             <Route exact path="/play" element={<GameRoom />} />
             <Route exact path="/draw" element={<DrawingCanvas />} />

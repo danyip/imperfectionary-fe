@@ -18,3 +18,9 @@ export const signup = (username, email, password) => {
 
   return axios.post(url, { username: username, email: email, password: password });
 };
+
+export const update = (username, email, password) => {
+  const url = `${BASE_URL}/users/update`;
+
+  return axios.post(url, { username: username, email: email, password: password });
+};

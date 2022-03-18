@@ -52,7 +52,7 @@ function reducer( state=initialState, action ){
 export const store = createStore(
   reducer, 
   {token: localStorage.getItem('jwt'), currentUser: 
-  localStorage.getItem('currentUser')},
+  JSON.parse(localStorage.getItem('currentUser'))},
   // optional argument here: initial state value, perhaps from localStorage or DB?
   // might need to merge with the above 'initialState' object?
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({trace: true})
@@ -61,6 +61,6 @@ export const store = createStore(
 store.subscribe( () => {
   const state = store.getState();
 localStorage.setItem('jwt', state.token);
-localStorage.setItem('currentUser', state.currentUser);
+localStorage.setItem('currentUser', JSON.stringify(state.currentUser));
   console.log('Redux update:', state);
 })
