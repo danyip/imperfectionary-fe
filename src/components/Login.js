@@ -20,8 +20,7 @@ function Login() {
   const checkEmailFormat = () => {
     setEmailFormatValidation(emailRegex.test(email));
   };
-
-  console.log(process.env.NODE_ENV);
+  
   const handleLogin = async (e) => {
     e.preventDefault();
 

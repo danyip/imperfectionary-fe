@@ -13,8 +13,8 @@ export const login = (email, password) => {
   return axios.post(url, { email: email, password: password });
 };
 
-export const signUp = (username, email, password) => {
+export const signup = (username, email, password) => {
   const url = `${BASE_URL}/users/create`;
 
-  return axios.post(url, { email: email, password: password });
+  return axios.post(url, { username: username, email: email, password: password });
 };

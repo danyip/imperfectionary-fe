@@ -1,9 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import io from "socket.io-client";
+
 import "../stylesheets/forms.css";
 import { emailRegex, usernameRegex } from "../lib/regex";
+import { signup } from "../lib/api";
+import { BASE_URL } from "../lib/api";
 
 function SignUp() {
   const [errorMessages, setErrorMessages] = useState({});
+  const [serverErrorMessage, setServerErrorMessage] = useState('');
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,6 +19,9 @@ function SignUp() {
   const [usernameFormatValidation, setUsernameFormatValidation] = useState(true);
   const [emailFormatValidation, setEmailFormatValidation] = useState(true);
   const [passwordMatchValidation, setPasswordMatchValidation] = useState(true);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const checkEmailFormat = () => {
     setEmailFormatValidation(emailRegex.test(email));
@@ -43,18 +53,42 @@ function SignUp() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (runErrorCheck()) {
       console.log("TRIGGER SignUp POST HERE");
       console.log(username, email, password);
+      try {
+        const res = await signup(username, email, password)
+        console.log(res);
+        
+        const socket = io.connect(BASE_URL, {
+          auth: {
+              token: res.data.token,
+            },
+          });
+    
+          // Pass userName, token and socket connection to redux
+          dispatch({ type: "currentUser/login", payload: [res.data, socket] });
+    
+          // To the lobby!
+          navigate("/lobby");
+      } catch (err) {
+        console.log('SIGNUP ERROR', err);
+
+        if (err.response.data.code === 11000) {
+          setServerErrorMessage(`${Object.values(err.response.data.keyValue)[0]} already exists`)
+        }
+      }
     }
   };
 
   return (
     <div>
       <h1>SignUp Component</h1>
+
+      <div className="error-message">{serverErrorMessage}</div>
 
       <form className="form-container" onSubmit={handleSignUp}>
         <label>
