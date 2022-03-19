@@ -108,17 +108,20 @@ function GameRoom() {
     <div className="game-room-wrapper" >
       <h1 className="secret-word" >{word}</h1>
 
-      
-        <Participants room={room} players={players} />
+      <div className="game-grid-wrapper">
+        {drawing? <DrawingCanvas /> : <GuessingCanvas />}
         
-        <ChatBox
-          setMessageText={setMessageText}
-          messageText={messageText}
-          sendMessage={sendMessage}
-          messages={messages}
-        />
-     
-      {drawing? <DrawingCanvas /> : <GuessingCanvas />}
+        <div className="participants-chat-wrapper">
+          <Participants room={room} players={players} />
+          <ChatBox
+            setMessageText={setMessageText}
+            messageText={messageText}
+            sendMessage={sendMessage}
+            messages={messages}
+          />
+        </div>
+      </div>
+
     </div>
   );
 }
