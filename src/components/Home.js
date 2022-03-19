@@ -1,12 +1,14 @@
 import React from 'react'
 import { Outlet, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import Nav from './Nav'
+import "../stylesheets/Home.css";
 
 function Home() {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const currentUser = useSelector(state => state.currentUser)
 
   const logout = ()=>{
     dispatch({type: 'currentUser/logout'})
@@ -16,18 +18,15 @@ function Home() {
   return (
     <div>
     <header>
-      <h1>imperfectionary</h1>
-      <nav>
-        <ul>
-          <li onClick={() => navigate('/login')}>Login</li>
-          <li onClick={() => navigate('/signup')}>Signup</li>
-          <li onClick={() => navigate('/profile')}>Edit Profile</li>
-          <li onClick={() => navigate('/lobby')}>Lobby</li>
-          <li onClick={logout}>Logout</li>
-        </ul>
-      </nav>
+      <h1 className='main-logo' onClick={() => navigate('/')}>imperfectionary</h1>
+      <Nav/>
     </header>
-      <Outlet/>
+      
+      <div className='content-wrapper'>
+      <Outlet />
+      </div>
+
+      
     </div>
   )
 }

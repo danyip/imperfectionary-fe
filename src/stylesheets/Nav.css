@@ -1,0 +1,17 @@
+.nav-wrapper{
+  margin-left: auto;
+}
+
+.nav-wrapper ul{
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link{
+
+}
+
+.nav-link:hover{
+  cursor: pointer;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.5);
+}

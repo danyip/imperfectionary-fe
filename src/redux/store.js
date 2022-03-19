@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 
 const initialState = {
-  currentUser: {},
+  currentUser: null,
   token: '',
   socket: null,
   
@@ -23,7 +23,7 @@ function reducer( state=initialState, action ){
     case 'currentUser/logout':
       return {
         ...state,
-        currentUser: {},
+        currentUser: null,
         token: '',
         socket: null
       };

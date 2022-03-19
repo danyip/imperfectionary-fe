@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import ChatBox from "./ChatBox";
 import DrawingCanvas from "./DrawingCanvas";
 import GuessingCanvas from "./GuessingCanvas";
+import Participants from "./Participants";
+import "../stylesheets/GameRoom.css";
 
 function GameRoom() {
   const [players, setPlayers] = useState([]);
@@ -103,24 +105,19 @@ function GameRoom() {
   }
 
   return (
-    <div>
-      <h1>{room}</h1>
-      <h2>{word}</h2>
-      {/* <button onClick={startHandler}>Start</button> */}
-      <div>
-        <h2>Player list</h2>
-        <ul>
-          {players.map((player) => (
-            <li key={player}>{player}</li>
-          ))}
-        </ul>
+    <div className="game-room-wrapper" >
+      <h1 className="secret-word" >{word}</h1>
+
+      
+        <Participants room={room} players={players} />
+        
         <ChatBox
           setMessageText={setMessageText}
           messageText={messageText}
           sendMessage={sendMessage}
           messages={messages}
         />
-      </div>
+     
       {drawing? <DrawingCanvas /> : <GuessingCanvas />}
     </div>
   );

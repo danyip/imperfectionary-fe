@@ -11,14 +11,10 @@ import SignUp from "./components/SignUp";
 import EditProfile from "./components/EditProfile";
 import Lobby from "./components/Lobby";
 import GameRoom from "./components/GameRoom";
-import DrawingCanvas from "./components/DrawingCanvas";
-import GuessingCanvas from "./components/GuessingCanvas";
 
 import "./App.css";
 
-
 function App() {
-  // console.log(" %c App rendering", "font-size: 16px");-
 
   const token = useSelector((state) => state.token);
   const socket = useSelector((state) => state.socket);
@@ -29,7 +25,6 @@ function App() {
     if (token && !socket) {
       dispatch({
         type: "socketIO/connect",
-        // payload: io.connect("http://localhost:9090", {
         payload: io.connect(BASE_URL, {
           auth: {
             token: token,
@@ -53,8 +48,6 @@ function App() {
             <Route exact path="/profile" element={<EditProfile />} />
             <Route exact path="/lobby" element={<Lobby />} />
             <Route exact path="/play" element={<GameRoom />} />
-            <Route exact path="/draw" element={<DrawingCanvas />} />
-            <Route exact path="/guess" element={<GuessingCanvas />} />
           </Route>
         </Routes>
       </Router>
