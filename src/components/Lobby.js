@@ -13,7 +13,7 @@ function Lobby() {
   
   useEffect(() => {
     if (!socket) {
-      navigate("/login");
+      navigate("/");
       return;
     } else {
       socket.emit("enter-lobby");

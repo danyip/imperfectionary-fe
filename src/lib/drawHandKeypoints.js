@@ -1,5 +1,5 @@
 
-export const drawHand = (predictions, ctx) => {
+export const drawHandKeypoints = (predictions, ctx) => {
   // console.log(ctx);
 
   if (predictions.length>0) {

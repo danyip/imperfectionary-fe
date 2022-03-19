@@ -7,13 +7,6 @@ import "../stylesheets/Home.css";
 function Home() {
 
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const currentUser = useSelector(state => state.currentUser)
-
-  const logout = ()=>{
-    dispatch({type: 'currentUser/logout'})
-    navigate('/login')
-  }
 
   return (
     <div>

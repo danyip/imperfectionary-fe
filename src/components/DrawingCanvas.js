@@ -5,14 +5,12 @@ import Webcam from "react-webcam";
 
 import * as handPoseDetection from "@tensorflow-models/hand-pose-detection";
 
-import { drawHand } from "../lib/drawHand";
+import { drawHandKeypoints } from "../lib/drawHandKeypoints";
 import { GestureEstimator } from "fingerpose";
 import { FistGesture, OpenGesture } from "../gestures";
 
 import "../stylesheets/DrawingCanvas.css";
 import { useSelector } from "react-redux";
-
-let markerPos = [];
 
 function DrawingCanvas() {
   const canvas = useRef(null);
@@ -23,6 +21,9 @@ function DrawingCanvas() {
   const socket = useSelector((state) => state.socket);
 
   let drawing = false;
+  let drawHue = 0;
+  let drawLightness = "0%";
+  let lineWidth = 5;
 
   const gestureEstimator = new GestureEstimator([FistGesture, OpenGesture]);
 
@@ -39,77 +40,38 @@ function DrawingCanvas() {
     const ctx = canvas.current.getContext("2d");
     ctx.canvas.width = 640;
     ctx.canvas.height = 480;
-    console.log(webcamRef.current);
-    setTimeout(() => {
-      // webcamRef
-    }, 2000);
+    document.addEventListener('keyup', clearCanvas)
   }, []);
 
-  // const resize = () => {
-  //   const ctx = canvas.current.getContext("2d");
-  //   ctx.canvas.width = 640;
-  //   ctx.canvas.height = 480;
-  // };
-
-  // useEffect(() => {
-  //   resize();
-  //   window.addEventListener("resize", resize);
-  //   return () => window.removeEventListener("resize", resize);
-  // }, [webcamRef]);
-  
-
   const startDraw = () => {
-    // console.log("mouse down: start drawing");
-    // setDrawing(true);
     drawing = true;
-    // console.log(marker.current);
-    marker.current.style.backgroundColor = `green`;
+    marker.current.style.backgroundColor = `hsl(${drawHue}, 100%, ${drawLightness})`;
+
     const ctx = canvas.current.getContext("2d");
     ctx.beginPath();
   };
 
   const stopDraw = () => {
-    // console.log("mouse up: stop drawing");
-    // setDrawing(false);
     drawing = false;
-    marker.current.style.backgroundColor = `red`;
+    marker.current.style.backgroundColor = ``;
   };
 
-  const clearCanvas = () => {
+  const clearCanvas = (e) => {
+    if (e.code !== 'Space') return 
     const ctx = canvas.current.getContext("2d");
     ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
-    socket.emit("clear-canvas")
+
+    if (socket) {
+      socket.emit("clear-canvas");
+    }
   };
 
-  const draw = (e) => {
-    // console.log('draw', e);
+  const mouseDraw = (e) => {
     if (!drawing) return;
-
-    const xPos = e.clientX - canvas.current.offsetLeft; //TODO: may need to account for scroll position here
-    const yPos = e.clientY - canvas.current.offsetTop; //TODO: may need to account for scroll position here
-
-    const ctx = canvas.current.getContext("2d");
-    ctx.lineWidth = 5;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "black";
-
-    // console.log(canvas.current.toDataURL("image/png"));
-
-    ctx.lineTo(xPos, yPos);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(xPos, yPos);
-    // console.log(xPos, yPos, canvas);
-
-    // socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
-  };
-
-  const handDraw = (x, y) => {
-    if (!drawing) return;
-
-    const xPos = x; //TODO: may need to account for scroll position here
-    const yPos = y; //TODO: may need to account for scroll position here
-
+    
+    const xPos = e.clientX - canvas.current.offsetParent.offsetLeft; 
+    const yPos = e.clientY - canvas.current.offsetParent.offsetTop;
+    
     const ctx = canvas.current.getContext("2d");
     ctx.lineWidth = 5;
     ctx.lineCap = "round";
@@ -119,81 +81,151 @@ function DrawingCanvas() {
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(xPos, yPos);
-    // console.log(socket);
 
-    socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
+    if (socket) {
+      socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
+    }
+    
+  };
+
+  const handDraw = (xPos, yPos) => {
+    if (!drawing) return;
+
+    marker.current.style.backgroundColor = `hsl(${drawHue}, 100%, ${drawLightness})`;
+    const ctx = canvas.current.getContext("2d");
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = `hsl(${drawHue}, 100%, ${drawLightness})`;
+
+    ctx.lineTo(xPos, yPos);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(xPos, yPos);
+
+    if(socket){
+      socket.emit("canvas-data", canvas.current.toDataURL("image/png"));
+    }
   };
 
   const runHandpose = async () => {
-    const net = await handPoseDetection.createDetector(model, detectorConfig);
+    const handpose = await handPoseDetection.createDetector(
+      model,
+      detectorConfig
+    );
     console.log("handpose loaded");
 
     setInterval(() => {
-      detect(net);
+      detectHands(handpose);
     }, 16);
   };
 
-  const detect = async (net) => {
+  const detectHands = async (handpose) => {
     // Only run detections if webcam is up and running
-
     if (
-      typeof webcamRef.current !== "undefined" &&
-      webcamRef.current !== null &&
-      webcamRef.current.video.readyState === 4
+      typeof webcamRef.current === "undefined" ||
+      webcamRef.current === null ||
+      webcamRef.current.video.readyState !== 4
     ) {
-      // Get Video properties from the webcam component
-      const video = webcamRef.current.video;
+      return;
+    }
 
-      const context = canvas.current.getContext("2d");
+    // Get Video properties from the webcam component
+    const video = webcamRef.current.video;
 
-      const videoWidth = webcamRef.current.video.videoWidth;
-      const videoHeight = webcamRef.current.video.videoHeight;
+    // Set canvas size to match the video
+    const videoWidth = webcamRef.current.video.videoWidth;
+    const videoHeight = webcamRef.current.video.videoHeight;
+    webcamCanvasRef.current.width = videoWidth;
+    webcamCanvasRef.current.height = videoHeight;
 
-      // // Set canvas size to match the video
-      webcamCanvasRef.current.width = videoWidth;
-      webcamCanvasRef.current.height = videoHeight;
+    // Make detections
+    const hands = await handpose.estimateHands(video, { flipHorizontal: true });
 
-      // Make detections
-      const hand = await net.estimateHands(video, { flipHorizontal: true });
+    // Draw keypoints
+    const ctx = webcamCanvasRef.current.getContext("2d");
+    drawHandKeypoints(hands, ctx);
 
-      // Draw mesh
-      const ctx = webcamCanvasRef.current.getContext("2d");
+    const rightHand = hands.find((handObj) => handObj.handedness === "Right");
+    const leftHand = hands.find((handObj) => handObj.handedness === "Left");
 
-      drawHand(hand, ctx);
-      // drawHand(hand, canvas.current.getContext('2d'));
+    if (rightHand) {
+      processRightHand(rightHand);
+    }
 
-      if (hand.length > 0) {
-        const rightHand = hand.find(handObj => handObj.handedness === 'Right')
-        
-        console.log(rightHand);
+    if (leftHand) {
+      processLeftHand(leftHand);
+    }
+  };
 
-        const xPos = rightHand.keypoints[9].x;
-        const yPos = rightHand.keypoints[9].y;
+  const processRightHand = (rightHand) => {
+    if (rightHand.score < 0.93) return;
 
-        handDraw(xPos, yPos);
+    const xPos = rightHand.keypoints[9].x;
+    const yPos = rightHand.keypoints[9].y;
 
-        marker.current.style.left = `${xPos}px`;
-        marker.current.style.top = `${yPos}px`;
+    handDraw(xPos, yPos);
 
-        const gestureEstimations = gestureEstimator.estimate(
-          mapForFingerpose(hand),
-          9.8
-        );
-        const gesture = gestureEstimations.gestures[0];
+    marker.current.style.left = `${xPos}px`;
+    marker.current.style.top = `${yPos}px`;
 
-        if (gesture && gesture.name === "open" && !drawing) {
-          // console.log("open");
-          startDraw();
-        } else if (gesture && gesture.name === "fist") {
-          // console.log("fist");
-          stopDraw();
-        }
+    const rightHandGesture = gestureEstimator.estimate(
+      mapForFingerpose(rightHand),
+      8.5
+    );
+    const gesture = rightHandGesture.gestures[0];
+
+    if (gesture && gesture.name === "open" && !drawing) {
+      // console.log("open");
+      startDraw();
+    } else if (gesture && gesture.name === "fist") {
+      // console.log("fist");
+      stopDraw();
+    }
+  };
+
+  const processLeftHand = (leftHand) => {
+    if (leftHand.score < 0.93) return;
+
+    const xPos = leftHand.keypoints[9].x;
+    const yPos = leftHand.keypoints[9].y;
+
+    const leftHandGesture = gestureEstimator.estimate(
+      mapForFingerpose(leftHand),
+      8.5
+    );
+    const gesture = leftHandGesture.gestures[0];
+
+    if (gesture && gesture.name === "open") {
+      console.log("open");
+      if (xPos < 140) {
+        drawLightness = "0%";
+        marker.current.style.width = `10px`;
+        marker.current.style.height = `10px`;
+        marker.current.style.transform = 'translate(-5px, -5px)'
+        lineWidth = 5;
+      } else if (xPos < 500) {
+        drawLightness = "50%";
+        drawHue = xPos - 140;
+        lineWidth = 5;
+        marker.current.style.width = `10px`;
+        marker.current.style.height = `10px`;
+        marker.current.style.transform = 'translate(-5px, -5px)'
+      } else {
+        drawLightness = "100%";
+        lineWidth = 30;
+        marker.current.style.width = `30px`;
+        marker.current.style.height = `30px`;
+        marker.current.style.transform = 'translate(-15px, -15px)'
       }
+
+      marker.current.style.borderColor = `hsl(${drawHue}, 100%, ${drawLightness})`;
+    } else if (gesture && gesture.name === "fist") {
+      console.log("fist");
     }
   };
 
   const mapForFingerpose = (hand) => {
-    const keypointsArr = hand[0].keypoints3D;
+    const keypointsArr = hand.keypoints3D;
     return keypointsArr.map((point) => {
       return [point.x, point.y, point.z];
     });
@@ -205,10 +237,9 @@ function DrawingCanvas() {
       <canvas
         className="canvas"
         ref={canvas}
-        // onMouseMove={draw}
-        // onMouseDown={startDraw}
-        // onMouseUp={stopDraw}
-        onMouseDown={clearCanvas}
+        onMouseMove={mouseDraw}
+        onMouseDown={startDraw}
+        onMouseUp={stopDraw}
       />
       <Webcam className="webcam" ref={webcamRef} muted={true} />
       <canvas className="webcamCanvas" ref={webcamCanvasRef} />
