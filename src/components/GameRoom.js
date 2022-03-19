@@ -12,14 +12,10 @@ function GameRoom() {
   const [room, setRoom] = useState("");
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
-  const [word, setWord] = useState('')
-
-  // const [gameStarted, setGameStarted] = useState(false);
-
+  const [word, setWord] = useState("");
   const [drawing, setDrawing] = useState(false);
 
   const navigate = useNavigate();
-
   const socket = useSelector((state) => state.socket);
   const currentUser = useSelector((state) => state.currentUser);
 
@@ -37,26 +33,25 @@ function GameRoom() {
       setRoom(roomName);
       if (gameObj.drawPlayer === currentUser.username) {
         setDrawing(true);
-        setWord(gameObj.word)
-      }else{
-        const secretWord = gameObj.word.split('').map(char => char === ' ' ? char : '_ ' )
-        setWord(secretWord)
+        setWord(gameObj.word);
+      } else {
+        const secretWord = gameObj.word
+          .split("")
+          .map((char) => (char === " " ? "  " : "_ "));
+        setWord(secretWord);
       }
-      
     });
 
     socket.on("update-player-list", updatePlayerList);
     socket.on("message-data", handleMessageData);
-    // socket.on("start-game", handleStartGame);
     socket.on("correct-guess", handleCorrectGuess);
-    socket.on("next-round", handleNextRound)
-    
+    socket.on("next-round", handleNextRound);
+
     return () => {
       socket.removeListener("message-data", handleMessageData);
       socket.removeListener("update-player-list", updatePlayerList);
-      // socket.removeListener("start-game", handleStartGame);
       socket.removeListener("correct-guess", handleCorrectGuess);
-      socket.removeListener("next-round", handleNextRound)
+      socket.removeListener("next-round", handleNextRound);
     };
   }, []);
 
@@ -70,7 +65,6 @@ function GameRoom() {
     setPlayers(playerArray);
   };
 
-
   const sendMessage = () => {
     if (messageText.length === 0) return;
 
@@ -80,37 +74,39 @@ function GameRoom() {
     };
 
     socket.emit("new-message", messageObj);
-
     setMessages([...messages, messageObj]);
-
     setMessageText("");
   };
 
-  const handleCorrectGuess = (name, word)=>{
+  const handleCorrectGuess = (name, word) => {
     console.log(`Correct guess by ${name} with ${word}`);
-    setWord(`Correct guess by ${name} with ${word}. The next round will begin shortly.`)
-  }
+    setWord(
+      `Correct guess by ${name} with ${word}. The next round will begin shortly.`
+    );
+  };
 
-  const handleNextRound = (gameObj)=>{
-    console.log('Triggering next round', gameObj);
-    
-      if (gameObj.drawPlayer === currentUser.username) {
-        setDrawing(true);
-        setWord(gameObj.word)
-      }else{
-        const secretWord = gameObj.word.split('').map(char => char === ' ' ? char : '_ ' )
-        setDrawing(false);
-        setWord(secretWord)
-      }
-  }
+  const handleNextRound = (gameObj) => {
+    console.log("Triggering next round", gameObj);
+
+    if (gameObj.drawPlayer === currentUser.username) {
+      setDrawing(true);
+      setWord(gameObj.word);
+    } else {
+      const secretWord = gameObj.word
+        .split("")
+        .map((char) => (char === " " ? char : "_ "));
+      setDrawing(false);
+      setWord(secretWord);
+    }
+  };
 
   return (
-    <div className="game-room-wrapper" >
-      <h1 className="secret-word" >{word}</h1>
+    <div className="game-room-wrapper">
+      <h1 className="secret-word">{word}</h1>
 
       <div className="game-grid-wrapper">
-        {drawing? <DrawingCanvas /> : <GuessingCanvas />}
-        
+        {drawing ? <DrawingCanvas /> : <GuessingCanvas />}
+
         <div className="participants-chat-wrapper">
           <Participants room={room} players={players} />
           <ChatBox
@@ -121,7 +117,6 @@ function GameRoom() {
           />
         </div>
       </div>
-
     </div>
   );
 }

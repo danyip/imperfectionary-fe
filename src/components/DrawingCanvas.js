@@ -7,7 +7,7 @@ import * as handPoseDetection from "@tensorflow-models/hand-pose-detection";
 
 import { drawHandKeypoints } from "../lib/drawHandKeypoints";
 import { GestureEstimator } from "fingerpose";
-import { FistGesture, OpenGesture } from "../gestures";
+import { FistGesture, OpenGesture } from "../lib/gestures";
 
 import "../stylesheets/DrawingCanvas.css";
 import { useSelector } from "react-redux";

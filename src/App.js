@@ -1,23 +1,17 @@
 import { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import Nav from './components/Nav'
 import io from "socket.io-client";
 
 import { BASE_URL } from "./lib/api";
 
-import Home from "./components/Home";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
-import EditProfile from "./components/EditProfile";
-import Lobby from "./components/Lobby";
-import GameRoom from "./components/GameRoom";
-
 import "./App.css";
 
 function App() {
-
   const token = useSelector((state) => state.token);
   const socket = useSelector((state) => state.socket);
+  const navigate = useNavigate()
 
   const dispatch = useDispatch();
 
@@ -40,17 +34,16 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route exact path="/login" element={<Login />} />
-            <Route exact path="/signup" element={<SignUp />} />
-            <Route exact path="/profile" element={<EditProfile />} />
-            <Route exact path="/lobby" element={<Lobby />} />
-            <Route exact path="/play" element={<GameRoom />} />
-          </Route>
-        </Routes>
-      </Router>
+      <header>
+        <h1 className="main-logo" onClick={() => navigate("/")}>
+          imperfectionary
+        </h1>
+        <Nav />
+      </header>
+
+      <div className="content-wrapper">
+        <Outlet />
+      </div>
     </div>
   );
 }

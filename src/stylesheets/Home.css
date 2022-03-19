@@ -1,18 +1,6 @@
-header {
+.home-wrapper{
+  text-align: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
-}
-
-*{
-  /* border: 1px solid hotpink */
-}
-.main-logo{
-  margin: 0;
-  /* font-family: 'Ramaraja', serif; */
-  font-size: 3em;
-  cursor: pointer;
-}
-
-.content-wrapper {
-  border: 1px solid green;
 }

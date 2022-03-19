@@ -1,6 +1,5 @@
 
 export const drawHandKeypoints = (predictions, ctx) => {
-  // console.log(ctx);
 
   if (predictions.length>0) {
     predictions.forEach((prediction)=>{

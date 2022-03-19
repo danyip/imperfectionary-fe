@@ -9,5 +9,19 @@
   height: 100vh;
 }
 
+header {
+  display: flex;
+  align-items: center;
+}
 
+.main-logo{
+  margin: 0;
+  /* font-family: 'Ramaraja', serif; */
+  font-size: 3em;
+  cursor: pointer;
+}
+
+.content-wrapper {
+  border: 1px solid green;
+}
 
