@@ -13,12 +13,19 @@ function GuessingCanvas() {
   useEffect(() => {
 
     socket.on('canvas-data', handleCanvasData)
-  
+    socket.on('clear', handleClear)
+    
     return () => {
       socket.removeListener('canvas-data', handleCanvasData)
+      socket.removeListener('clear', handleClear)
     }
   }, [])
   
+  const handleClear = () => {
+    const ctx = canvas.current.getContext("2d");
+    ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
+    socket.emit("clear-canvas")
+  }
 
   const handleCanvasData = (data)=>{
     console.log('receiving canvas-data from socket');
@@ -31,7 +38,6 @@ function GuessingCanvas() {
     };
     image.src = data;
   }
-  
   
   const resize = () => {
     const ctx = canvas.current.getContext("2d");
@@ -46,7 +52,6 @@ function GuessingCanvas() {
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
   }, []);
-
 
   return (
     <div>
