@@ -4,24 +4,26 @@
 
 .App {
   margin: 0 auto;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   width: var(--main-content-width);
   height: 100vh;
 }
 
 header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
 .main-logo{
   margin: 0;
-  /* font-family: 'Ramaraja', serif; */
-  font-size: 3em;
+  font-family: 'Coming Soon', cursive;
+  font-size: clamp(2rem, 5vw, 3rem);
   cursor: pointer;
 }
 
 .content-wrapper {
-  border: 1px solid green;
+  /* border: 1px solid green; */
 }
+
 

@@ -1,0 +1,30 @@
+.instructions-wrapper{
+  max-width: 640px;
+}
+
+.instructions-grid{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 1rem;
+  row-gap: 0.1rem;
+  align-items: center;
+}
+
+.rhs-icon, .lhs-icon, .space-icon{
+  height: 3rem;
+  vertical-align: middle;
+  justify-self: end;
+}
+
+.lhs-icon{
+  transform: scaleX(-1);
+}
+
+.instruction-text{
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+
+
+

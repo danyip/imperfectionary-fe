@@ -1,0 +1,45 @@
+.lobby-wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.game-list-wrapper{
+  
+}
+
+.game-link{
+  font-size: 2rem;
+  cursor: pointer;
+  width: 100%;
+  padding: 1rem 0;
+  border-radius: 1rem;
+  transition: 250ms;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.game-link:hover{
+  box-shadow: rgba(0, 0, 0, 0.66) 0px 12px 35px 4px;
+  background-color: rgba(0, 0, 0, 0.0);
+  /* transform: translate(0, -5px); */
+}
+
+.game-list-wrapper ul{
+  border: 1px solid black;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 640px;
+  height: 640px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.game-list-wrapper ul::-webkit-scrollbar {
+  display: none;
+}
+

@@ -2,9 +2,10 @@
 .draw-container {
   position: relative;
   overflow: hidden;
-  border: 1px solid black;
-  width: fit-content;
+  border-radius: 1rem;
+  width: 640px;
   height: fit-content;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .marker{
@@ -32,7 +33,4 @@
   right: 0;
   bottom: 0;
   width: 200px;
-  /* opacity: 0; */
-  /* text-align: center; */
-  /* z-index: 9; */
 }

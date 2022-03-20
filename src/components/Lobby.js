@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import "../stylesheets/Lobby.css"
 
 function Lobby() {
   const [roomName, setRoomName] = useState("");
@@ -10,7 +11,6 @@ function Lobby() {
 
   const socket = useSelector((state) => state.socket);
 
-  
   useEffect(() => {
     if (!socket) {
       navigate("/");
@@ -29,35 +29,48 @@ function Lobby() {
     setRoomList(data);
   };
 
-  const joinRoom = (room) => {
-    if (room.length===0) return
-    socket.emit("join-room", room);
+  const joinRoom = (e) => {
+    e.preventDefault();
+    if (roomName.length === 0) return;
+    socket.emit("join-room", roomName);
     navigate("/play");
   };
 
-  return (
-    <div>
-      <h1>Lobby</h1>
-      <ul>
-        {roomList.map((roomName) => (
-          <li
-            key={roomName}
-            onClick={(e) => joinRoom(e.target.dataset.name)}
-            data-name={roomName}
-          >
-            {roomName}
-          </li>
-        ))}
-      </ul>
+  const joinExistingRoom = (room)=>{
+    socket.emit("join-room", room);
+    navigate("/play");
+  }
 
-      <input
-        type="text"
-        value={roomName}
-        onChange={(e) => {
-          setRoomName(e.target.value);
-        }}
-      />
-      <button onClick={() => joinRoom(roomName)}>Create Room</button>
+  return (
+    <div className="lobby-wrapper">
+      <h1>Lobby</h1>
+      <form className="form-container" onSubmit={joinRoom}>
+        <input
+          type="text"
+          placeholder="Game name"
+          value={roomName}
+          onChange={(e) => {
+            setRoomName(e.target.value);
+          }}
+        />
+        <button>Create Game</button>
+      </form>
+
+      <div className="game-list-wrapper">
+        <h2>Games in progress: {roomList.length}</h2>
+        <ul>
+          {roomList.map((roomName) => (
+            <li
+              key={roomName}
+              onClick={(e) => joinExistingRoom(e.target.dataset.name)}
+              data-name={roomName}
+              className="game-link"
+            >
+              {roomName}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
