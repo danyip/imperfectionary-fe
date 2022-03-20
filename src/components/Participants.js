@@ -1,19 +1,20 @@
-import React from 'react'
+import React from "react";
+import "../stylesheets/Participants.css";
 
-function Participants({players, room}) {
-
-
+function Participants({ players, room }) {
   return (
-    <div className='participants-wrapper' >
-        <h2>Room: {room}</h2>
-        <h4>Players List</h4>
-        <ul>
-          {players.map((player) => (
-            <li key={player}>{player}</li>
-          ))}
-        </ul>
+    <div className="participants-wrapper">
+      <h3>{room}</h3>
+      <strong>Players online: {players.length}</strong>
+      <ul className="player-container">
+        {players.map((player) => (
+          <li className="player" key={player}>
+            {player}
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
 
-export default Participants
+export default Participants;

@@ -6,6 +6,8 @@ import DrawingCanvas from "./DrawingCanvas";
 import GuessingCanvas from "./GuessingCanvas";
 import Participants from "./Participants";
 import "../stylesheets/GameRoom.css";
+import Instructions from "./Instructions";
+import DrawingPlayer from "./DrawingPlayer";
 
 function GameRoom() {
   const [players, setPlayers] = useState([]);
@@ -14,6 +16,7 @@ function GameRoom() {
   const [messageText, setMessageText] = useState("");
   const [word, setWord] = useState("");
   const [drawing, setDrawing] = useState(false);
+  const [drawPlayer, setDrawPlayer] = useState("")
 
   const navigate = useNavigate();
   const socket = useSelector((state) => state.socket);
@@ -31,6 +34,7 @@ function GameRoom() {
       }
       setPlayers(gameObj.players);
       setRoom(roomName);
+      setDrawPlayer(gameObj.drawPlayer)
       if (gameObj.drawPlayer === currentUser.username) {
         setDrawing(true);
         setWord(gameObj.word);
@@ -87,7 +91,7 @@ function GameRoom() {
 
   const handleNextRound = (gameObj) => {
     console.log("Triggering next round", gameObj);
-
+    setDrawPlayer(gameObj.drawPlayer)
     if (gameObj.drawPlayer === currentUser.username) {
       setDrawing(true);
       setWord(gameObj.word);
@@ -102,22 +106,25 @@ function GameRoom() {
 
   return (
     <div className="game-room-wrapper">
+
+      <div className="game-grid-wrapper">
+      <DrawingPlayer drawPlayer={drawPlayer}/>
+      <Participants room={room} players={players} />
+
+      </div>
       
       <h1 className="secret-word">{word}</h1>
 
       <div className="game-grid-wrapper">
         {drawing ? <DrawingCanvas /> : <GuessingCanvas />}
-
-        <div className="participants-chat-wrapper">
-          <Participants room={room} players={players} />
-          <ChatBox
-            setMessageText={setMessageText}
-            messageText={messageText}
-            sendMessage={sendMessage}
-            messages={messages}
-          />
-        </div>
+        <ChatBox
+          setMessageText={setMessageText}
+          messageText={messageText}
+          sendMessage={sendMessage}
+          messages={messages}
+        />
       </div>
+      {drawing && <Instructions/>}
     </div>
   );
 }

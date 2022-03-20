@@ -40,7 +40,7 @@ function DrawingCanvas() {
     const ctx = canvas.current.getContext("2d");
     ctx.canvas.width = 640;
     ctx.canvas.height = 480;
-    document.addEventListener('keyup', clearCanvas)
+    document.addEventListener('keydown', clearCanvas)
   }, []);
 
   const startDraw = () => {
@@ -58,6 +58,7 @@ function DrawingCanvas() {
 
   const clearCanvas = (e) => {
     if (e.code !== 'Space') return 
+    e.preventDefault()
     const ctx = canvas.current.getContext("2d");
     ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
 
@@ -69,8 +70,9 @@ function DrawingCanvas() {
   const mouseDraw = (e) => {
     if (!drawing) return;
     
+    console.log(e.view.scrollY);
     const xPos = e.clientX - canvas.current.offsetParent.offsetLeft; 
-    const yPos = e.clientY - canvas.current.offsetParent.offsetTop;
+    const yPos = e.clientY - canvas.current.offsetParent.offsetTop + e.view.scrollY;
     
     const ctx = canvas.current.getContext("2d");
     ctx.lineWidth = 5;

@@ -1,15 +1,16 @@
-.game-room-wrapper{
-  
+.game-room-wrapper {
+  margin-top: 2rem;
 }
 
-.secret-word{
+.secret-word {
   text-align: center;
 }
 
-.game-grid-wrapper{
+.game-grid-wrapper {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
   margin: 0 auto;
+  /* min-width: 640px; */
 }

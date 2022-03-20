@@ -56,7 +56,7 @@ function GuessingCanvas() {
   }, []);
 
   return (
-    <div>
+    <div className="draw-container ">
       <canvas className="canvas" ref={canvas}></canvas>
     </div>
   );

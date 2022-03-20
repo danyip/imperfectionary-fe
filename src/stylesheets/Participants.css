@@ -1,0 +1,30 @@
+.participants-wrapper{
+  box-sizing: border-box;
+  /* margin: 0 auto 2rem; */
+  /* border: 1px solid black; */
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  width: 392px;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  background-color: white;
+  text-align: center;
+}
+
+.participants-wrapper p{
+  margin: 0
+}
+
+.player-container{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem
+}
+
+.player{
+  border: 1px solid black;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+
+
+

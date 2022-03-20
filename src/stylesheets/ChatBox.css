@@ -15,7 +15,7 @@
 }
 
 .messages-wrapper{
-  height :360px;
+  height: 400px;
   width: 360px;
   overflow-y: scroll;
   padding: 0 0.5rem;
