@@ -21,7 +21,7 @@ function Nav() {
       <nav className='nav-wrapper'>
       <ul>
         <li className='nav-link' onClick={() => navigate('/lobby')}>Lobby</li>
-        <li className='nav-link' onClick={() => navigate('/profile')}>Edit Profile</li>
+        <li className='nav-link' onClick={() => navigate('/profile')}>Profile</li>
         <li className='nav-link' onClick={logout}>Logout</li>
       </ul>
     </nav>

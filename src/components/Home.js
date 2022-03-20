@@ -3,7 +3,6 @@ import DrawingCanvas from './DrawingCanvas';
 import Instructions from './Instructions';
 
 import "../stylesheets/Home.css";
-import { Link } from 'react-router-dom';
 
 function Home() {
 

@@ -102,6 +102,7 @@ function GameRoom() {
 
   return (
     <div className="game-room-wrapper">
+      
       <h1 className="secret-word">{word}</h1>
 
       <div className="game-grid-wrapper">
