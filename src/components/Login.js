@@ -14,6 +14,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [emailFormatValidation, setEmailFormatValidation] = useState(true);
   const [password, setPassword] = useState("");
+  const [serverErrorMessage, setServerErrorMessage] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,7 +31,6 @@ function Login() {
       const res = await login(email, password);
 
       // Make the socket connection passing the token from login
-      // const socket = io.connect("http://localhost:9090", {
       const socket = io.connect(BASE_URL, {
       auth: {
           token: res.data.token,
@@ -45,14 +45,15 @@ function Login() {
       navigate("/lobby");
 
     } catch (err) {
-      console.log(err);
+      console.log(err.response.data.message );
+      setServerErrorMessage(err.response.data.message)
     }
   };
 
   return (
     <div>
       <h1>Login Component</h1>
-      <div className="error-message"></div>
+      <div className="error-message">{serverErrorMessage}</div>
       <form className="form-container" onSubmit={handleLogin}>
         <label>
           Email:
