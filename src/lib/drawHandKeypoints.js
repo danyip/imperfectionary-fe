@@ -1,4 +1,5 @@
 
+// Draws dots on the canvas to match the keypoints from the predictions
 export const drawHandKeypoints = (predictions, ctx) => {
 
   if (predictions.length>0) {

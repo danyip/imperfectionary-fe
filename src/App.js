@@ -5,18 +5,22 @@ import Nav from './components/Nav'
 import io from "socket.io-client";
 
 import { BASE_URL } from "./lib/api";
-
 import "./App.css";
 
 function App() {
+  // Grab the token and socket from redux store
   const token = useSelector((state) => state.token);
   const socket = useSelector((state) => state.socket);
+  
+  const dispatch = useDispatch();
   const navigate = useNavigate()
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
+    
+    // If there is a token but no socket connection
     if (token && !socket) {
+
+      // Make the socket connection and save it into redux store
       dispatch({
         type: "socketIO/connect",
         payload: io.connect(BASE_URL, {
@@ -40,7 +44,6 @@ function App() {
         </h1>
         <Nav />
       </header>
-
       <div className="content-wrapper">
         <Outlet />
       </div>

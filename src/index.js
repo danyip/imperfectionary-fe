@@ -28,7 +28,6 @@ ReactDOM.render(
           </Route>
         </Routes>
       </Router>
-
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

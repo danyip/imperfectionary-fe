@@ -4,7 +4,6 @@
 
 .App {
   margin: 0 auto;
-  /* border: 1px solid red; */
   width: var(--main-content-width);
   height: 100vh;
 }
@@ -22,8 +21,5 @@ header {
   cursor: pointer;
 }
 
-.content-wrapper {
-  /* border: 1px solid green; */
-}
 
 
