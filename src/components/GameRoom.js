@@ -68,6 +68,7 @@ function GameRoom() {
     socket.on("message-data", handleMessageData);
     socket.on("correct-guess", handleCorrectGuess);
     socket.on("next-round", handleNextRound);
+    socket.on("connect_error", handleConnectionError);
 
     // Remove socket listeners
     return () => {
@@ -75,8 +76,16 @@ function GameRoom() {
       socket.removeListener("update-player-list", updatePlayerList);
       socket.removeListener("correct-guess", handleCorrectGuess);
       socket.removeListener("next-round", handleNextRound);
+      socket.removeListener("connect_error", handleConnectionError);
+
     };
   }, []);
+
+  // If the server crashes, navigate back to the lobby
+  const handleConnectionError = ()=>{
+    console.log('CONNECTION ERROR');
+    navigate('/lobby')
+  }
 
   // Adds a new message to state
   const handleMessageData = (message) => {
