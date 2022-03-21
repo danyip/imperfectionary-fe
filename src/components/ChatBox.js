@@ -9,15 +9,16 @@ export default function ChatBox({
   setMessageText,
 }) {
   const currentUser = useSelector((state) => state.currentUser);
+  const scrollRef = useRef(null);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     sendMessage();
   };
 
-  const scrollRef = useRef(null);
-
+  // Scroll the chatbox to the bottom when a new message is recieved
   useEffect(() => {
-    scrollRef.current.scrollTop = 5000;
+    scrollRef.current.scrollTop = 10000;
   }, [messages]);
 
   return (

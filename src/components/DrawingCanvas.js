@@ -274,7 +274,6 @@ function DrawingCanvas() {
     }
   };
 
-
   return (
     <div className="draw-container">
       <div className="marker" ref={marker} />

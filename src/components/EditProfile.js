@@ -6,18 +6,17 @@ import "../stylesheets/forms.css";
 import { emailRegex, usernameRegex } from "../lib/regex";
 import { update } from "../lib/api";
 
-
 function EditProfile() {
   const currentUser = useSelector((state) => state.currentUser);
   const token = useSelector((state) => state.token);
+  const socket = useSelector((state) => state.socket);
 
   const [errorMessages, setErrorMessages] = useState({});
-  const [serverErrorMessage, setServerErrorMessage] = useState('');
+  const [serverErrorMessage, setServerErrorMessage] = useState("");
   const [username, setUsername] = useState(currentUser.username);
   const [email, setEmail] = useState(currentUser.email);
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-
   const [usernameFormatValidation, setUsernameFormatValidation] = useState(true);
   const [emailFormatValidation, setEmailFormatValidation] = useState(true);
   const [passwordMatchValidation, setPasswordMatchValidation] = useState(true);
@@ -25,8 +24,7 @@ function EditProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const socket = useSelector((state) => state.socket);
-
+  
   const checkEmailFormat = () => {
     setEmailFormatValidation(emailRegex.test(email));
   };
@@ -61,23 +59,25 @@ function EditProfile() {
     e.preventDefault();
 
     if (runErrorCheck()) {
-      console.log("TRIGGER EditProfile POST HERE");
-      console.log(username, email, password);
       try {
-        const res = await update(username, email, password, token)
+        // Send data to server
+        const res = await update(username, email, password, token);
 
-        console.log(res.data);
+        // Pass userName, token and socket connection to redux
+        dispatch({
+          type: "currentUser/login",
+          payload: [{ user: res.data, token: token }, socket],
+        });
 
-          // Pass userName, token and socket connection to redux
-          dispatch({ type: "currentUser/login", payload: [{user: res.data, token: token}, socket] });
-    
-          // To the lobby!
-          navigate("/lobby");
+        // To the lobby!
+        navigate("/lobby");
       } catch (err) {
-        console.log('EditProfile ERROR', err);
-
+        
+        // Catch the error of an attempted duplicated username or email
         if (err.response.data.code === 11000) {
-          setServerErrorMessage(`${Object.values(err.response.data.keyValue)[0]} already exists`)
+          setServerErrorMessage(
+            `${Object.values(err.response.data.keyValue)[0]} already exists`
+          );
         }
       }
     }
