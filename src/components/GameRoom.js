@@ -57,7 +57,7 @@ function GameRoom() {
         // Set the word to underscores
         const secretWord = gameObj.word
           .split("")
-          .map((char) => (char === " " ? "  " : "_ "));
+          .map((char) => (char === " " ? "- " : "_ "));
         setWord(secretWord);
       }
 
@@ -150,7 +150,7 @@ function GameRoom() {
       // Set the word to underscores
       const secretWord = gameObj.word
         .split("")
-        .map((char) => (char === " " ? char : "_ "));
+        .map((char) => (char === " " ? "- " : "_ "));
       
       setDrawing(false);
       setWord(secretWord);

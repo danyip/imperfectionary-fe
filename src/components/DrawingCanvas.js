@@ -14,7 +14,7 @@ function DrawingCanvas() {
   const canvas = useRef(null);
   const webcamRef = useRef(null);
   const webcamCanvasRef = useRef(null);
-  const marker = useRef(null);
+   const marker = useRef(null);
 
   const socket = useSelector((state) => state.socket);
 
