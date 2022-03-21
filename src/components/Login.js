@@ -51,7 +51,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="form-wrapper">
       <h1>Login Component</h1>
       <div className="error-message">{serverErrorMessage}</div>
       <form className="form-container" onSubmit={handleLogin}>

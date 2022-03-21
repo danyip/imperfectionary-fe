@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import io from "socket.io-client";
 
 import "../stylesheets/forms.css";
 import { emailRegex, usernameRegex } from "../lib/regex";
 import { update } from "../lib/api";
-import { BASE_URL } from "../lib/api";
+
 
 function EditProfile() {
   const currentUser = useSelector((state) => state.currentUser);
   const token = useSelector((state) => state.token);
-
 
   const [errorMessages, setErrorMessages] = useState({});
   const [serverErrorMessage, setServerErrorMessage] = useState('');
@@ -86,8 +84,8 @@ function EditProfile() {
   };
 
   return (
-    <div>
-      <h1>EditProfile Component</h1>
+    <div className="form-wrapper">
+      <h1>{username}'s profile</h1>
 
       <div className="error-message">{serverErrorMessage}</div>
 
@@ -149,7 +147,7 @@ function EditProfile() {
           />
           <div className="error-message">{errorMessages.password}</div>
         </label>
-        <button>EditProfile</button>
+        <button>Update</button>
       </form>
     </div>
   );

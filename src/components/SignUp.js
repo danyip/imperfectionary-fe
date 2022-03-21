@@ -15,7 +15,6 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-
   const [usernameFormatValidation, setUsernameFormatValidation] = useState(true);
   const [emailFormatValidation, setEmailFormatValidation] = useState(true);
   const [passwordMatchValidation, setPasswordMatchValidation] = useState(true);
@@ -85,9 +84,8 @@ function SignUp() {
   };
 
   return (
-    <div>
-      <h1>SignUp Component</h1>
-
+    <div className="form-wrapper">
+      <h1>Create an account</h1>
       <div className="error-message">{serverErrorMessage}</div>
 
       <form className="form-container" onSubmit={handleSignUp}>
@@ -144,7 +142,7 @@ function SignUp() {
           />
           <div className="error-message">{errorMessages.password}</div>
         </label>
-        <button>SignUp</button>
+        <button>Sign Up</button>
       </form>
     </div>
   );

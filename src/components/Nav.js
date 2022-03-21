@@ -32,7 +32,7 @@ function Nav() {
     <nav className='nav-wrapper'>
       <ul>
         <li className='nav-link' onClick={() => navigate('/login')}>Login</li>
-        <li className='nav-link' onClick={() => navigate('/signup')}>Signup</li>
+        <li className='nav-link' onClick={() => navigate('/signup')}>Sign Up</li>
       </ul>
     </nav>
   )

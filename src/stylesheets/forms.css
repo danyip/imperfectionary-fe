@@ -1,3 +1,13 @@
+.form-wrapper{
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.form-wrapper h1{
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
 .form-container{
   display: flex;
   flex-direction: column;
@@ -16,7 +26,7 @@
 }
 
 .error-message{
-  height: 0.5rem;
+  height: 1rem;
   color: red;
   font-size: 0.8rem;
 }
