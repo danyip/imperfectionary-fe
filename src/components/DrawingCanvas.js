@@ -41,6 +41,9 @@ function DrawingCanvas() {
     ctx.canvas.width = 640;
     ctx.canvas.height = 480;
     document.addEventListener('keydown', clearCanvas)
+
+    return ()=>{document.removeEventListener('keydown', clearCanvas)}
+
   }, []);
 
   const startDraw = () => {
