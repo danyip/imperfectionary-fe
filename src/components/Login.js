@@ -43,8 +43,10 @@ function Login() {
       navigate("/lobby");
 
     } catch (err) {
-
-      setServerErrorMessage(err.response.data.message)
+      console.log(err);
+      if (err.response.data.message) {
+        setServerErrorMessage(err.response.data.message)
+      }
     }
   };
 
